@@ -26,8 +26,12 @@ import org.andengine.opengl.texture.region.TextureRegion;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.math.MathUtils;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.opengl.GLES20;
+import android.os.Handler;
+import android.os.Message;
+import android.widget.Toast;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -39,7 +43,7 @@ public class MainActivity extends SimpleBaseGameActivity {
 	
 	private static  int CAMERA_WIDTH ;
 	private static  int CAMERA_HEIGHT;
-	
+	private final int START_JOYSTICK_POSITION=0;
 	private Camera mCamera;
 	
 	private BitmapTextureAtlas mVehiclesTexture;
@@ -105,7 +109,7 @@ public class MainActivity extends SimpleBaseGameActivity {
 	public void onGameCreated() {
 
 	}
-
+	
 	// ===========================================================
 	// Methods
 	// ===========================================================
@@ -123,42 +127,57 @@ public class MainActivity extends SimpleBaseGameActivity {
 
 		this.mScene.attachChild(this.Ship);
 	}
-
+	
+	public void gameToast(final String msg) {
+		    this.runOnUiThread(new Runnable() {
+		        @Override
+		       public void run() {
+		           Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+		        }
+		    });
+		}
 
 	private void initOnScreenControls() {
 	
 		final float x1 = 0;
 		final float y1 = CAMERA_HEIGHT - this.mOnScreenControlBaseTextureRegion.getHeight();
+		int speedOfHolostoyHod=4;
 		final AnalogOnScreenControl analogOnScreenControl = new AnalogOnScreenControl(x1, y1, this.mCamera, this.mOnScreenControlBaseTextureRegion, this.mOnScreenControlKnobTextureRegion, 0.1f, this.getVertexBufferObjectManager(), new IAnalogOnScreenControlListener() {
 		//	@Override
 			public void onControlChange(final BaseOnScreenControl pBaseOnScreenControl, final float pValueX, final float pValueY) {
-				final Body carBody = MainActivity.this.ShipBody;
+			 Body carBody = MainActivity.this.ShipBody;
 
-				final Vector2 velocity = Vector2Pool.obtain(pValueX * 8, pValueY * 8);
+				final Vector2 velocity = Vector2Pool.obtain(pValueX * 10, pValueY * 10);
+
+
 				carBody.setLinearVelocity(velocity);
+				
+				
+				
 				Vector2Pool.recycle(velocity);
-				if(!(pValueX == x1 && pValueY == x1)) {
-
-
-					carBody.setTransform(carBody.getWorldCenter(),(float)Math.atan2(pValueX, -pValueY) );
-
-					MainActivity.this.Ship.setRotation(MathUtils.radToDeg((float)Math.atan2(pValueX, -pValueY)));
+				if(!(pValueX ==START_JOYSTICK_POSITION && pValueY == START_JOYSTICK_POSITION)) {
+                   carBody.setTransform(carBody.getWorldCenter(),(float)Math.atan2(pValueX, -pValueY) );
+                   MainActivity.this.Ship.setRotation(MathUtils.radToDeg((float)Math.atan2(pValueX, -pValueY)));
 					
 				}
+				else carBody.applyLinearImpulse(pValueX * 4, pValueX * 4, pValueX * 4, pValueY * 4);
 				
 			}
 
 		
 		public void onControlClick(final AnalogOnScreenControl pAnalogOnScreenControl) {
-				/* Nothing. */
+			//String msg= "Hello, World!";
+			
+		//	gameToast(msg);
+
 			}
 		});
 		analogOnScreenControl.getControlBase().setBlendFunction(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
-		analogOnScreenControl.getControlBase().setAlpha(0.5f);   //прозрачность
-		analogOnScreenControl.getControlBase().setScaleCenter(-20, 128);   // пололжение скрин контрола 
-		analogOnScreenControl.getControlBase().setScale(1.75f);   // размер большой картинки
-		analogOnScreenControl.getControlKnob().setScale(1.75f);  // размер окружности в центре 
-		
+		analogOnScreenControl.getControlBase().setAlpha(0.5f);   //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+		analogOnScreenControl.getControlBase().setScaleCenter(-20, 128);   // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 
+		analogOnScreenControl.getControlBase().setScale(1.75f);   // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+		analogOnScreenControl.getControlKnob().setScale(1.75f);  // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ 
+		analogOnScreenControl.setOnControlClickEnabled(true);
 		analogOnScreenControl.refreshControlKnobPosition();
 		
 		this.mScene.setChildScene(analogOnScreenControl);
