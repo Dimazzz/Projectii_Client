@@ -28,6 +28,7 @@ import org.andengine.util.math.MathUtils;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Point;
 import android.opengl.GLES20;
 import android.os.Handler;
 import android.os.Message;
@@ -94,7 +95,9 @@ public class MainActivity extends SimpleBaseGameActivity {
 		this.mScene = new Scene();
 		this.mScene.setBackground(new Background(0, 0, 0));
 
-		this.mPhysicsWorld = new FixedStepPhysicsWorld(30, new Vector2(0, 0), false, 8, 1);
+		//this.mPhysicsWorld = new FixedStepPhysicsWorld(30, new Vector2(0, 0), false, 8, 1);
+		this.mPhysicsWorld = new CustomPhysicsWorld(new Vector2(0, 0),false);
+		
 
 		this.initCar();
 	
@@ -136,31 +139,42 @@ public class MainActivity extends SimpleBaseGameActivity {
 		        }
 		    });
 		}
-
+    private Point wayToMoveHolostoiHod=new Point();
 	private void initOnScreenControls() {
 	
 		final float x1 = 0;
 		final float y1 = CAMERA_HEIGHT - this.mOnScreenControlBaseTextureRegion.getHeight();
 		int speedOfHolostoyHod=4;
+		wayToMoveHolostoiHod.x=0;wayToMoveHolostoiHod.y=1;
 		final AnalogOnScreenControl analogOnScreenControl = new AnalogOnScreenControl(x1, y1, this.mCamera, this.mOnScreenControlBaseTextureRegion, this.mOnScreenControlKnobTextureRegion, 0.1f, this.getVertexBufferObjectManager(), new IAnalogOnScreenControlListener() {
 		//	@Override
 			public void onControlChange(final BaseOnScreenControl pBaseOnScreenControl, final float pValueX, final float pValueY) {
-			 Body carBody = MainActivity.this.ShipBody;
+			
 
-				final Vector2 velocity = Vector2Pool.obtain(pValueX * 10, pValueY * 10);
+				/*final Vector2 velocity = Vector2Pool.obtain(, pValueY * 10);
 
 
-				carBody.setLinearVelocity(velocity);
-				
-				
-				
+				ShipBody.setLinearVelocity(velocity);
 				Vector2Pool.recycle(velocity);
+				*/
+				
+				Vector2 Vo = ShipBody.getLinearVelocity();//getting previous speed
+				//here a code will be located to analyse speed and optymize moving
+
+				
+
+				ShipBody.setLinearVelocity(Vo.x +pValueX , Vo.y + pValueY );
+				
 				if(!(pValueX ==START_JOYSTICK_POSITION && pValueY == START_JOYSTICK_POSITION)) {
-                   carBody.setTransform(carBody.getWorldCenter(),(float)Math.atan2(pValueX, -pValueY) );
-                   MainActivity.this.Ship.setRotation(MathUtils.radToDeg((float)Math.atan2(pValueX, -pValueY)));
+					ShipBody.setTransform(ShipBody.getWorldCenter(),(float)Math.atan2(pValueX, -pValueY) );
 					
+                   MainActivity.this.Ship.setRotation(MathUtils.radToDeg((float)Math.atan2(pValueX, -pValueY)));
+       
 				}
-				else carBody.applyLinearImpulse(pValueX * 4, pValueX * 4, pValueX * 4, pValueY * 4);
+				else {
+					
+					//ShipBody.applyLinearImpulse(cBody.getAngle()%5,carBody.getAngle()%5 , 0, 0);
+					}
 				
 			}
 
@@ -186,4 +200,31 @@ public class MainActivity extends SimpleBaseGameActivity {
 	// ===========================================================
 	// Inner and Anonymous Classes
 	// ===========================================================
+
+public void onFrame(){
+	//ShipBody.applyForce(new Vector2(0,-100), new Vector2(Ship.getWidth()/2,0));
+	Vector2 Vo = ShipBody.getLinearVelocity();
+
+	float xAccel = 0;
+	float yAccel = 1;
+
+	ShipBody.setLinearVelocity(Vo.x + xAccel, Vo.y + yAccel);
 }
+public class CustomPhysicsWorld extends PhysicsWorld{
+
+	public CustomPhysicsWorld(Vector2 pGravity, boolean pAllowSleep) {
+		super(pGravity, pAllowSleep);
+	}
+	
+	@Override
+	public void onUpdate(final float pSecondsElapsed) {
+		this.mRunnableHandler.onUpdate(pSecondsElapsed);
+		this.mWorld.step(pSecondsElapsed, this.mVelocityIterations, this.mPositionIterations);
+		this.mPhysicsConnectorManager.onUpdate(pSecondsElapsed);
+		//onFrame();
+	}
+	
+}
+}
+
+
