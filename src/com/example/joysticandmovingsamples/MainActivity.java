@@ -62,6 +62,7 @@ public class MainActivity extends SimpleBaseGameActivity {
 	private Sprite Ship;
 
 	private boolean isGetToStop=false;
+	
 	public EngineOptions onCreateEngineOptions() {
 		Resources res = getResources();
 		CAMERA_HEIGHT = res.getDisplayMetrics().heightPixels;
@@ -101,7 +102,7 @@ public class MainActivity extends SimpleBaseGameActivity {
 		this.mPhysicsWorld = new CustomPhysicsWorld(new Vector2(0, 0),false);
 		
 
-		this.initCar();
+		this.initShip();
 	
 		this.initOnScreenControls();
 
@@ -118,12 +119,11 @@ public class MainActivity extends SimpleBaseGameActivity {
 	// ===========================================================
 	// Methods
 	// ===========================================================
-	private void initCar() {
+	private void initShip() {
 
 		final float centerX = (CAMERA_WIDTH - this.mVehiclesTextureRegion.getWidth()) / 2;
 		final float centerY = (CAMERA_HEIGHT - this.mVehiclesTextureRegion.getHeight()) / 2;
-		//Ship = new Sprite(centerX, centerY, 30, 52, this.mVehiclesTextureRegion, this.getVertexBufferObjectManager());
-		this.Ship = new Sprite(centerX, centerY, 30, 52, this.mVehiclesTextureRegion, this.getVertexBufferObjectManager())
+	    this.Ship = new Sprite(centerX, centerY, 30, 52, this.mVehiclesTextureRegion, this.getVertexBufferObjectManager())
         {
                 @Override
                 public boolean onAreaTouched(TouchEvent pSceneTouchEvent,
@@ -134,10 +134,8 @@ public class MainActivity extends SimpleBaseGameActivity {
                 }
                 @Override
                 protected void onManagedUpdate(float pSecondsElapsed) {
-                       
-                	   // gameToast( "xspeed->"+String.valueOf(MainActivity.this.ShipBody.getLinearVelocity().x)+
-                	    //		"yspeed->"+String.valueOf(MainActivity.this.ShipBody.getLinearVelocity().y));
-                	  //  StopShip(MainActivity.this.ShipBody,isGetToStop ,true);
+                       	if(isGetToStop)
+                	    decelerationShip(MainActivity.this.ShipBody ,true);
                         super.onManagedUpdate(pSecondsElapsed);
                         
                         
@@ -160,46 +158,40 @@ public class MainActivity extends SimpleBaseGameActivity {
 		        }
 		    });
 		}
-	private void StopShip(Body ship,boolean isGetToStop,boolean ifSaveMoving){
+	private void setShipSpeedWithLimit(Body Ship,Vector2 speedLimit,float pValueX,float pValueY){
+		Vector2 speed = Ship.getLinearVelocity();//getting previous speed of ship
+		if(speed.x+pValueX<speedLimit.x)
+			if(speed.y+pValueY<speedLimit.y)
+               Ship.setLinearVelocity(speed.x + pValueX  , speed.y + pValueY );
+			else  Ship.setLinearVelocity(speed.x + pValueX  , speedLimit.y );
+		else if(speed.y+pValueY<speedLimit.y)
+            Ship.setLinearVelocity(speedLimit.x  , speed.y + pValueY );
+			else  Ship.setLinearVelocity( speedLimit.x  , speedLimit.y );
+		
+	}
+	private void decelerationShip(Body ship,boolean ifSaveMoving){
 		
 		Vector2 velocity = ship.getLinearVelocity();//getting previous speed
-		if(isGetToStop)
-			if((velocity.x>4&&velocity.y>4))ship.setLinearVelocity(velocity.x -(velocity.x%1) , velocity.y-(velocity.y%1)  );
-			else if(ifSaveMoving)
+        if((velocity.x!=0&&velocity.y!=0))
+			if(Math.abs(velocity.x)>0.5&&Math.abs(velocity.y)>0.5)ship.setLinearVelocity(velocity.x -(velocity.x/100) , velocity.y-(velocity.y/100)  );
+			   else if(ifSaveMoving)
 			       {
-				      ship.setLinearVelocity(velocity.x -(velocity.x-1) , velocity.y-(velocity.y-1)  );
+				      ship.setLinearVelocity(velocity.x -((velocity.x/100)-velocity.x%0.01f) , velocity.y-((velocity.y/100)-velocity.y%0.01f));
 				   }
-			       else ship.setLinearVelocity(velocity.x -(velocity.x) , velocity.y-(velocity.y)  );
+			else ship.setLinearVelocity(velocity.x -velocity.x , velocity.y-velocity.y  );
 		
 		
 	}
-    private Point wayToMoveHolostoiHod=new Point();
+
 	private void initOnScreenControls() {
 	
 		final float x1 = 0;
 		final float y1 = CAMERA_HEIGHT - this.mOnScreenControlBaseTextureRegion.getHeight();
-		int speedOfHolostoyHod=4;
-		wayToMoveHolostoiHod.x=0;wayToMoveHolostoiHod.y=1;
 		final AnalogOnScreenControl analogOnScreenControl = new AnalogOnScreenControl(x1, y1, this.mCamera, this.mOnScreenControlBaseTextureRegion, this.mOnScreenControlKnobTextureRegion, 0.1f, this.getVertexBufferObjectManager(), new IAnalogOnScreenControlListener() {
-		//	@Override
 			public void onControlChange(final BaseOnScreenControl pBaseOnScreenControl, final float pValueX, final float pValueY) {
-			
-
-				/*final Vector2 velocity = Vector2Pool.obtain(, pValueY * 10);
-
-
-				ShipBody.setLinearVelocity(velocity);
-				Vector2Pool.recycle(velocity);
-				*/
-				
-				Vector2 Vo = ShipBody.getLinearVelocity();//getting previous speed
-				//here a code will be located to analyse speed and optymize moving
-
-				
-
-				ShipBody.setLinearVelocity(Vo.x +pValueX , Vo.y + pValueY );
-				gameToast( "xspeed->"+String.valueOf(MainActivity.this.ShipBody.getLinearVelocity().x)+
-        	    		"yspeed->"+String.valueOf(MainActivity.this.ShipBody.getLinearVelocity().y));
+			//	Vector2 speed = ShipBody.getLinearVelocity();//getting previous speed of ship
+				// ShipBody.setLinearVelocity(speed.x + pValueX  , speed.y + pValueY );
+				setShipSpeedWithLimit(ShipBody,new Vector2(10,10),pValueX,pValueY);
 				if(!(pValueX ==START_JOYSTICK_POSITION && pValueY == START_JOYSTICK_POSITION)) {
 					ShipBody.setTransform(ShipBody.getWorldCenter(),(float)Math.atan2(pValueX, -pValueY) );
 					
@@ -208,15 +200,14 @@ public class MainActivity extends SimpleBaseGameActivity {
 				}
 				else {
 					isGetToStop=true;
-					gameToast(String.valueOf(isGetToStop));
-					ShipBody.setLinearVelocity(Vo.x -(Vo.x%2), Vo.y-(Vo.y%3)  );//первоначальное торможение скорости 
+					Vector2 speedBeforeTouchUp=ShipBody.getLinearVelocity();
+				   	ShipBody.setLinearVelocity(speedBeforeTouchUp.x -(speedBeforeTouchUp.x/50), speedBeforeTouchUp.y-(speedBeforeTouchUp.y/50)  );//первоначальное торможение скорости 
 					}
 				
 			}
 
 		
 		public void onControlClick(final AnalogOnScreenControl pAnalogOnScreenControl) {
-			//if (ShipBody.getLinearVelocity().x<0)gameToast("Yes,it's menshe 0");
 			}
 		});
 		analogOnScreenControl.getControlBase().setBlendFunction(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
@@ -234,14 +225,8 @@ public class MainActivity extends SimpleBaseGameActivity {
 	// Inner and Anonymous Classes
 	// ===========================================================
 
-public void onFrame(){
-	//ShipBody.applyForce(new Vector2(0,-100), new Vector2(Ship.getWidth()/2,0));
-	Vector2 Vo = ShipBody.getLinearVelocity();
-
-	float xAccel = 0;
-	float yAccel = 1;
-
-	ShipBody.setLinearVelocity(Vo.x + xAccel, Vo.y + yAccel);
+public void onUpdateFunction(){
+	
 }
 public class CustomPhysicsWorld extends PhysicsWorld{
 
@@ -255,9 +240,7 @@ public class CustomPhysicsWorld extends PhysicsWorld{
 		this.mRunnableHandler.onUpdate(pSecondsElapsed);
 		this.mWorld.step(pSecondsElapsed, this.mVelocityIterations, this.mPositionIterations);
 		this.mPhysicsConnectorManager.onUpdate(pSecondsElapsed);
-		
-		
-		//onFrame();
+         //onUpdateFunction
 	}
 	
 }
