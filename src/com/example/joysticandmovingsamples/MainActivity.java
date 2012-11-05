@@ -2,13 +2,16 @@ package com.example.joysticandmovingsamples;
 
 
 
+import org.andengine.engine.camera.BoundCamera;
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.camera.hud.controls.AnalogOnScreenControl;
 import org.andengine.engine.camera.hud.controls.AnalogOnScreenControl.IAnalogOnScreenControlListener;
 import org.andengine.engine.camera.hud.controls.BaseOnScreenControl;
+import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
+import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.sprite.Sprite;
@@ -18,13 +21,24 @@ import org.andengine.extension.physics.box2d.PhysicsConnector;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
 import org.andengine.extension.physics.box2d.util.Vector2Pool;
+import org.andengine.extension.tmx.TMXLayer;
+import org.andengine.extension.tmx.TMXLoader;
+import org.andengine.extension.tmx.TMXProperties;
+import org.andengine.extension.tmx.TMXTile;
+import org.andengine.extension.tmx.TMXTileProperty;
+import org.andengine.extension.tmx.TMXTiledMap;
+import org.andengine.extension.tmx.TMXLoader.ITMXTilePropertiesListener;
+import org.andengine.extension.tmx.util.exception.TMXLoadException;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.TextureRegion;
+import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
+import org.andengine.util.Constants;
+import org.andengine.util.debug.Debug;
 import org.andengine.util.math.MathUtils;
 
 import android.content.Context;
@@ -46,14 +60,15 @@ public class MainActivity extends SimpleBaseGameActivity {
 	private static  int CAMERA_WIDTH ;
 	private static  int CAMERA_HEIGHT;
 	private final int START_JOYSTICK_POSITION=0;
-	private Camera mCamera;
+	private BoundCamera mBoundChaseCamera;
+	private TMXTiledMap mTMXTiledMap;
 	
 	private BitmapTextureAtlas mVehiclesTexture;
 	private TextureRegion mVehiclesTextureRegion;
     private BitmapTextureAtlas mOnScreenControlTexture;
 	private ITextureRegion mOnScreenControlBaseTextureRegion;
 	private ITextureRegion mOnScreenControlKnobTextureRegion;
-
+	protected int mCactusCount;
 	private Scene mScene;
 
 	private PhysicsWorld mPhysicsWorld;
@@ -68,9 +83,9 @@ public class MainActivity extends SimpleBaseGameActivity {
 		CAMERA_HEIGHT = res.getDisplayMetrics().heightPixels;
 		CAMERA_WIDTH = res.getDisplayMetrics().widthPixels;
 		
-		this.mCamera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
+		this.mBoundChaseCamera =  new BoundCamera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
 
-		return new EngineOptions(true, ScreenOrientation.LANDSCAPE_FIXED, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), this.mCamera);
+		return new EngineOptions(true, ScreenOrientation.LANDSCAPE_FIXED, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), this.mBoundChaseCamera);
 	}
 
 	@Override
@@ -94,19 +109,45 @@ public class MainActivity extends SimpleBaseGameActivity {
 	public Scene onCreateScene() {
 		isGetToStop=false;
 		this.mEngine.registerUpdateHandler(new FPSLogger());
-
 		this.mScene = new Scene();
+		try {
+			final TMXLoader tmxLoader = new TMXLoader(this.getAssets(), this.mEngine.getTextureManager(), TextureOptions.BILINEAR_PREMULTIPLYALPHA, this.getVertexBufferObjectManager(), new ITMXTilePropertiesListener() {
+				@Override
+				public void onTMXTileWithPropertiesCreated(final TMXTiledMap pTMXTiledMap, final TMXLayer pTMXLayer, final TMXTile pTMXTile, final TMXProperties<TMXTileProperty> pTMXTileProperties) {
+					/* We are going to count the tiles that have the property "cactus=true" set. */
+					if(pTMXTileProperties.containsTMXProperty("cactus", "true")) {
+						MainActivity.this.mCactusCount++;
+					}
+				}
+			});
+			this.mTMXTiledMap = tmxLoader.loadFromAsset("tmx/desert.tmx");
+
+		} catch (final TMXLoadException e) {
+			Debug.e(e);
+		}
+
+		final TMXLayer tmxLayer = this.mTMXTiledMap.getTMXLayers().get(0);
+		mScene.attachChild(tmxLayer);
+		final Rectangle currentTileRectangle = new Rectangle(0, 0, this.mTMXTiledMap.getTileWidth(), this.mTMXTiledMap.getTileHeight(), this.getVertexBufferObjectManager());
+		
+		/* Make the camera not exceed the bounds of the TMXEntity. */
+		this.mBoundChaseCamera.setBounds(0, 0, tmxLayer.getHeight(), tmxLayer.getWidth());
+		this.mBoundChaseCamera.setBoundsEnabled(true);
+
+		
 		this.mScene.setBackground(new Background(0, 0, 0));
 
-		//this.mPhysicsWorld = new FixedStepPhysicsWorld(30, new Vector2(0, 0), false, 8, 1);
-		this.mPhysicsWorld = new CustomPhysicsWorld(new Vector2(0, 0),false);
+		this.mPhysicsWorld = new FixedStepPhysicsWorld(30, new Vector2(0, 0), false, 8, 1);
+		//this.mPhysicsWorld = new CustomPhysicsWorld(new Vector2(0, 0),false);
+		//initRacetrackBorders();
 		
 
 		this.initShip();
 	
 		this.initOnScreenControls();
-
+		this.mBoundChaseCamera.setChaseEntity(Ship);
 		this.mScene.registerUpdateHandler(this.mPhysicsWorld);
+		
 
 		return this.mScene;
 	}
@@ -187,11 +228,11 @@ public class MainActivity extends SimpleBaseGameActivity {
 	
 		final float x1 = 0;
 		final float y1 = CAMERA_HEIGHT - this.mOnScreenControlBaseTextureRegion.getHeight();
-		final AnalogOnScreenControl analogOnScreenControl = new AnalogOnScreenControl(x1, y1, this.mCamera, this.mOnScreenControlBaseTextureRegion, this.mOnScreenControlKnobTextureRegion, 0.1f, this.getVertexBufferObjectManager(), new IAnalogOnScreenControlListener() {
+		final AnalogOnScreenControl analogOnScreenControl = new AnalogOnScreenControl(x1, y1, this.mBoundChaseCamera, this.mOnScreenControlBaseTextureRegion, this.mOnScreenControlKnobTextureRegion, 0.1f, this.getVertexBufferObjectManager(), new IAnalogOnScreenControlListener() {
 			public void onControlChange(final BaseOnScreenControl pBaseOnScreenControl, final float pValueX, final float pValueY) {
 			//	Vector2 speed = ShipBody.getLinearVelocity();//getting previous speed of ship
 				// ShipBody.setLinearVelocity(speed.x + pValueX  , speed.y + pValueY );
-				setShipSpeedWithLimit(ShipBody,new Vector2(10,10),pValueX,pValueY);
+				setShipSpeedWithLimit(ShipBody,new Vector2(5,5),pValueX,pValueY);
 				if(!(pValueX ==START_JOYSTICK_POSITION && pValueY == START_JOYSTICK_POSITION)) {
 					ShipBody.setTransform(ShipBody.getWorldCenter(),(float)Math.atan2(pValueX, -pValueY) );
 					
@@ -224,7 +265,33 @@ public class MainActivity extends SimpleBaseGameActivity {
 	// ===========================================================
 	// Inner and Anonymous Classes
 	// ===========================================================
+	private void initRacetrackBorders() {
+	
+		float HEIGHT=this.mTMXTiledMap.getTileHeight();
+		float WIDTH=this.mTMXTiledMap.getTileWidth();
+		final VertexBufferObjectManager vertexBufferObjectManager = this.getVertexBufferObjectManager();
 
+		final Rectangle bottomOuter = new Rectangle(0, HEIGHT - 2, WIDTH, 2, vertexBufferObjectManager);
+		final Rectangle topOuter = new Rectangle(0, 0, WIDTH, 2, vertexBufferObjectManager);
+		final Rectangle leftOuter = new Rectangle(0, 0, 2, HEIGHT, vertexBufferObjectManager);
+		final Rectangle rightOuter = new Rectangle(WIDTH - 2, 0, 2, HEIGHT, vertexBufferObjectManager);
+
+		
+		final FixtureDef wallFixtureDef = PhysicsFactory.createFixtureDef(0, 0.5f, 0.5f);
+		PhysicsFactory.createBoxBody(this.mPhysicsWorld, bottomOuter, BodyType.StaticBody, wallFixtureDef);
+		PhysicsFactory.createBoxBody(this.mPhysicsWorld, topOuter, BodyType.StaticBody, wallFixtureDef);
+		PhysicsFactory.createBoxBody(this.mPhysicsWorld, leftOuter, BodyType.StaticBody, wallFixtureDef);
+		PhysicsFactory.createBoxBody(this.mPhysicsWorld, rightOuter, BodyType.StaticBody, wallFixtureDef);
+
+		
+
+		this.mScene.attachChild(bottomOuter);
+		this.mScene.attachChild(topOuter);
+		this.mScene.attachChild(leftOuter);
+		this.mScene.attachChild(rightOuter);
+
+		
+	}
 public void onUpdateFunction(){
 	
 }
