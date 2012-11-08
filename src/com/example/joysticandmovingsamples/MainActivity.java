@@ -224,8 +224,14 @@ public class MainActivity extends SimpleBaseGameActivity {
 	public void onGameCreated() {
 
 	}
-    private void SmoothRotation(Body body,float prevAngle,float nextAngle,int steps){
-    	
+    private void SmoothRotation(Sprite xpen,float prevAngle,float nextAngle,int steps,float timeBeforeUpdate){
+    	float tempAngle=nextAngle+0.0000001f;
+    	float stepDuration=timeBeforeUpdate/steps;
+    	while(tempAngle!=nextAngle){
+            	xpen.setRotation(MathUtils.radToDeg(tempAngle));
+    	        //tempAngle+=приближение к nextAngle
+    	}
+    	xpen.setAlpha(nextAngle);
     }
 	// ===========================================================
 	// Methods
