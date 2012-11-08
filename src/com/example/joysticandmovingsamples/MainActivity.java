@@ -193,8 +193,8 @@ public class MainActivity extends SimpleBaseGameActivity {
                 }
                 @Override
                 protected void onManagedUpdate(float pSecondsElapsed) {
-                       	//if(isGetToStop)
-                	     //  decelerationShip(MainActivity.this.ShipBody ,true);
+                       	if(isGetToStop)
+                	       decelerationShip(MainActivity.this.ShipBody ,true);
                         super.onManagedUpdate(pSecondsElapsed);
                         
                         
@@ -227,6 +227,8 @@ public class MainActivity extends SimpleBaseGameActivity {
     private void SmoothRotation(Sprite xpen,float prevAngle,float nextAngle,int steps,float timeBeforeUpdate){
     	float tempAngle=nextAngle+0.0000001f;
     	float stepDuration=timeBeforeUpdate/steps;
+    	//здесь выбирается направление движения в пользу меньшего из углов
+    	//и вопрос нужно ли плавное вращение когда не отпускаешь джостик???
     	while(tempAngle!=nextAngle){
             	xpen.setRotation(MathUtils.radToDeg(tempAngle));
     	        //tempAngle+=приближение к nextAngle
