@@ -4,6 +4,7 @@ package com.example.joysticandmovingsamples;
 
 
 
+import org.andengine.engine.camera.BoundCamera;
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.camera.hud.controls.AnalogOnScreenControl;
 import org.andengine.engine.camera.hud.controls.AnalogOnScreenControl.IAnalogOnScreenControlListener;
@@ -11,17 +12,27 @@ import org.andengine.engine.camera.hud.controls.BaseOnScreenControl;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
+import org.andengine.entity.modifier.ParallelEntityModifier;
+import org.andengine.entity.modifier.RotationModifier;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.sprite.Sprite;
-import org.andengine.entity.sprite.TiledSprite;
 import org.andengine.entity.util.FPSLogger;
+
 import org.andengine.extension.physics.box2d.FixedStepPhysicsWorld;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
 import org.andengine.extension.physics.box2d.util.Vector2Pool;
+import org.andengine.extension.tmx.TMXLayer;
+import org.andengine.extension.tmx.TMXLoader;
+import org.andengine.extension.tmx.TMXProperties;
+import org.andengine.extension.tmx.TMXTile;
+import org.andengine.extension.tmx.TMXTileProperty;
+import org.andengine.extension.tmx.TMXTiledMap;
+import org.andengine.extension.tmx.TMXLoader.ITMXTilePropertiesListener;
+import org.andengine.extension.tmx.util.exception.TMXLoadException;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
@@ -31,9 +42,11 @@ import org.andengine.opengl.texture.region.TextureRegion;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
+import org.andengine.util.debug.Debug;
 import org.andengine.util.math.MathUtils;
 
 import android.content.res.Resources;
+import android.graphics.Point;
 import android.opengl.GLES20;
 import android.widget.Toast;
 
@@ -58,14 +71,18 @@ public class MainActivity extends SimpleBaseGameActivity {
 	// Fields
 	// ===========================================================
 
-	private Camera mCamera;
+	private BoundCamera mBoundChaseCamera;
 
 	private BitmapTextureAtlas mVehiclesTexture;
 	private TextureRegion mVehiclesTextureRegion;
 
 	private BitmapTextureAtlas mBoxTexture;
 	private ITextureRegion mBoxTextureRegion;
+	private TiledTextureRegion mPlayerTextureRegion;
+	private TMXTiledMap mTMXTiledMap;
+	protected int mCactusCount;
 
+    private Point worldSize;
 
 
 	private BitmapTextureAtlas mOnScreenControlTexture;
@@ -96,11 +113,12 @@ public class MainActivity extends SimpleBaseGameActivity {
 		Resources res = getResources();
 		CAMERA_HEIGHT = res.getDisplayMetrics().heightPixels;
 		CAMERA_WIDTH = res.getDisplayMetrics().widthPixels;
-		
-		this.mCamera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
+		worldSize=new Point(CAMERA_WIDTH, CAMERA_HEIGHT);
+		this.mBoundChaseCamera = new BoundCamera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
+  
+		return new EngineOptions(true, ScreenOrientation.LANDSCAPE_FIXED, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), this.mBoundChaseCamera);
 
-		return new EngineOptions(true, ScreenOrientation.LANDSCAPE_FIXED, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), this.mCamera);
-	}
+		}
 
 	@Override
 	public void onCreateResources() {
@@ -127,18 +145,77 @@ public class MainActivity extends SimpleBaseGameActivity {
 	public Scene onCreateScene() {
 		this.mEngine.registerUpdateHandler(new FPSLogger());
 
-		this.mScene = new Scene();
-		this.mScene.setBackground(new Background(0, 0, 0));
-
 		this.mPhysicsWorld = new FixedStepPhysicsWorld(30, new Vector2(0, 0), false, 8, 1);
+		this.mScene = new Scene();
+		this.mScene.registerUpdateHandler(this.mPhysicsWorld);
+		try {
+			final TMXLoader tmxLoader = new TMXLoader(this.getAssets(), this.mEngine.getTextureManager(), TextureOptions.BILINEAR_PREMULTIPLYALPHA, this.getVertexBufferObjectManager(), new ITMXTilePropertiesListener() {
+				@Override
+				public void onTMXTileWithPropertiesCreated(final TMXTiledMap pTMXTiledMap, final TMXLayer pTMXLayer, final TMXTile pTMXTile, final TMXProperties<TMXTileProperty> pTMXTileProperties) {
+					/* We are going to count the tiles that have the property "cactus=true" set. */
+					if(pTMXTileProperties.containsTMXProperty("cactus", "true")) {
+						MainActivity.this.mCactusCount++;
+					}
+				}
+			});
+			this.mTMXTiledMap = tmxLoader.loadFromAsset("tmx/desert.tmx");
 
+			
+		} catch (final TMXLoadException e) {
+			Debug.e(e);
+		}
+
+		final TMXLayer tmxLayer = this.mTMXTiledMap.getTMXLayers().get(0);
+		mScene.attachChild(tmxLayer);
+
+		/* Make the camera not exceed the bounds of the TMXEntity. */
 		
-		this.initBorders();
-		this.initShip();
+		this.mBoundChaseCamera.setBounds(0, 0, tmxLayer.getWidth(),tmxLayer.getHeight());
+		worldSize.x=tmxLayer.getWidth();
+		worldSize.y=tmxLayer.getHeight();
+		
+		//gameToast(" height-> "+String.valueOf(tmxLayer.getHeight())+"width-> "+String.valueOf(tmxLayer.getWidth()));
+	//	gameToast(" height-> "+String.valueOf(CAMERA_HEIGHT)+"width-> "+String.valueOf(CAMERA_HEIGHT));
+		
+		this.mBoundChaseCamera.setBoundsEnabled(true);
+		//this.initBorders();
+		createBorderBox(mScene, 0, 0, tmxLayer.getWidth(), tmxLayer.getHeight(), 2);
+		final float centerX = (CAMERA_WIDTH - this.mVehiclesTextureRegion.getWidth()) / 2;
+		final float centerY = (CAMERA_HEIGHT - this.mVehiclesTextureRegion.getHeight()) / 2;
+	    this.Ship = new Sprite(centerX, centerY, 30, 52, this.mVehiclesTextureRegion, this.getVertexBufferObjectManager())
+        {
+                @Override
+                public boolean onAreaTouched(TouchEvent pSceneTouchEvent,
+                                float pTouchAreaLocalX, float pTouchAreaLocalY)
+                {
+					return mFlippedHorizontal;
+                       
+                }
+                @Override
+                protected void onManagedUpdate(float pSecondsElapsed) {
+                       	//if(isGetToStop)
+                	     //  decelerationShip(MainActivity.this.ShipBody ,true);
+                        super.onManagedUpdate(pSecondsElapsed);
+                        
+                        
+                }
+        };  
+        this.mBoundChaseCamera.setChaseEntity(Ship);
+        final FixtureDef carFixtureDef = PhysicsFactory.createFixtureDef(1, 0.5f, 0.5f);
+		this.ShipBody = PhysicsFactory.createBoxBody(this.mPhysicsWorld, this.Ship, BodyType.DynamicBody, carFixtureDef);
+
+		this.mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(Ship, ShipBody, true, false){
+			public void onUpdate(float pSecondsElapsed){
+				super.onUpdate(pSecondsElapsed);
+				mBoundChaseCamera.updateChaseEntity();
+			}
+		});
+		mScene.attachChild(Ship);
+		
 		this.initObstacles();
 		this.initOnScreenControls();
 
-		this.mScene.registerUpdateHandler(this.mPhysicsWorld);
+	
 
 		return this.mScene;
 	}
@@ -147,7 +224,9 @@ public class MainActivity extends SimpleBaseGameActivity {
 	public void onGameCreated() {
 
 	}
-
+    private void SmoothRotation(Body body,float prevAngle,float nextAngle,int steps){
+    	
+    }
 	// ===========================================================
 	// Methods
 	// ===========================================================
@@ -156,13 +235,21 @@ public class MainActivity extends SimpleBaseGameActivity {
 		
 		final float x1 = 0;
 		final float y1 = CAMERA_HEIGHT - this.mOnScreenControlBaseTextureRegion.getHeight();
-		final AnalogOnScreenControl analogOnScreenControl = new AnalogOnScreenControl(x1, y1, this.mCamera, this.mOnScreenControlBaseTextureRegion, this.mOnScreenControlKnobTextureRegion, 0.1f, this.getVertexBufferObjectManager(), new IAnalogOnScreenControlListener() {
+		final AnalogOnScreenControl analogOnScreenControl = new AnalogOnScreenControl(x1, y1, this.mBoundChaseCamera, this.mOnScreenControlBaseTextureRegion, this.mOnScreenControlKnobTextureRegion, 0.1f, this.getVertexBufferObjectManager(), new IAnalogOnScreenControlListener() {
 			public void onControlChange(final BaseOnScreenControl pBaseOnScreenControl, final float pValueX, final float pValueY) {
-			    setShipSpeedWithLimit(ShipBody,new Vector2(10,10),pValueX,pValueY);
+				// MainActivity.this.mBoundChaseCamera.updateChaseEntity();
+				setShipSpeedWithLimit(ShipBody,new Vector2(10,10),pValueX,pValueY);
 				if(!(pValueX ==START_JOYSTICK_POSITION && pValueY == START_JOYSTICK_POSITION)) {
-				  Vector2 transform=ShipBody.getTransform().getPosition();
-					ShipBody.setTransform(ShipBody.getWorldCenter(),(float)Math.atan2(transform.x+ pValueX, transform.y-pValueY) );
-					
+				   float prevAngle= ShipBody.getAngle();
+				  
+				   float nextAngle=(float)Math.atan2(pValueX, -pValueY) ;
+				   
+				   //gameToast("PrevAngle->"+String.valueOf(MathUtils.radToDeg(prevAngle))+"NextAngle->"+String.valueOf(MathUtils.radToDeg(nextAngle)));
+				   
+					//ShipBody.setTransform(ShipBody.getWorldCenter(),nextAngle);
+				   // ParallelEntityModifier entityModifier=new ParallelEntityModifier(new RotationModifier(1f, 180, 0));
+				//   MainActivity.this.Ship.registerEntityModifier(entityModifier);
+					//gameToast("PValueX->"+ String.valueOf(pValueX)+"PValueY->"+ String.valueOf(pValueY));
                    MainActivity.this.Ship.setRotation(MathUtils.radToDeg((float)Math.atan2(pValueX, -pValueY)));
                    isGetToStop=false;
 				}
@@ -190,33 +277,9 @@ public class MainActivity extends SimpleBaseGameActivity {
 	}
 
 	private void initShip() {
-		final float centerX = (CAMERA_WIDTH - this.mVehiclesTextureRegion.getWidth()) / 2;
-		final float centerY = (CAMERA_HEIGHT - this.mVehiclesTextureRegion.getHeight()) / 2;
-	    this.Ship = new Sprite(centerX, centerY, 30, 52, this.mVehiclesTextureRegion, this.getVertexBufferObjectManager())
-        {
-                @Override
-                public boolean onAreaTouched(TouchEvent pSceneTouchEvent,
-                                float pTouchAreaLocalX, float pTouchAreaLocalY)
-                {
-					return mFlippedHorizontal;
-                       
-                }
-                @Override
-                protected void onManagedUpdate(float pSecondsElapsed) {
-                       	if(isGetToStop)
-                	    decelerationShip(MainActivity.this.ShipBody ,true);
-                        super.onManagedUpdate(pSecondsElapsed);
-                        
-                        
-                }
-        };     
+		
 
-		final FixtureDef carFixtureDef = PhysicsFactory.createFixtureDef(1, 0.5f, 0.5f);
-		this.ShipBody = PhysicsFactory.createBoxBody(this.mPhysicsWorld, this.Ship, BodyType.DynamicBody, carFixtureDef);
-
-		this.mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(this.Ship, this.ShipBody, true, false));
-
-		this.mScene.attachChild(this.Ship);
+		
 	}
 
 	private void initObstacles() {
@@ -224,6 +287,11 @@ public class MainActivity extends SimpleBaseGameActivity {
 		this.addObstacle((CAMERA_WIDTH / 2)-200, 100);
 		this.addObstacle(CAMERA_WIDTH / 3+100, CAMERA_HEIGHT /2);
 		this.addObstacle(CAMERA_WIDTH -100, CAMERA_HEIGHT -200);
+		this.addObstacle(worldSize.x / 2,  worldSize.y/2);
+		this.addObstacle(worldSize.x /2, 500);
+		this.addObstacle(CAMERA_WIDTH / 3+100, 7*worldSize.x / 8);
+		this.addObstacle(100, 500);
+	
 	}
 
 	private void addObstacle(final float pX, final float pY) {
@@ -274,28 +342,24 @@ private void decelerationShip(Body ship,boolean ifSaveMoving){
 
 
 
-	private void initBorders() {
-		final VertexBufferObjectManager vertexBufferObjectManager = this.getVertexBufferObjectManager();
+private void createBorderBox(Scene scene,float pointFromX,float pointFromY,float width,float height,int fatness)
+{
+	final VertexBufferObjectManager vertexBufferObjectManager = this.getVertexBufferObjectManager();
+	final FixtureDef wallFixtureDef = PhysicsFactory.createFixtureDef(0, 0.5f, 0.5f);
 
-		final Rectangle bottomOuter = new Rectangle(0, CAMERA_HEIGHT - 2, CAMERA_WIDTH, 2, vertexBufferObjectManager);
-		final Rectangle topOuter = new Rectangle(0, 0, CAMERA_WIDTH, 2, vertexBufferObjectManager);
-		final Rectangle leftOuter = new Rectangle(0, 0, 2, CAMERA_HEIGHT, vertexBufferObjectManager);
-		final Rectangle rightOuter = new Rectangle(CAMERA_WIDTH - 2, 0, 2, CAMERA_HEIGHT, vertexBufferObjectManager);
-
-		final FixtureDef wallFixtureDef = PhysicsFactory.createFixtureDef(0, 0.5f, 0.5f);
-		PhysicsFactory.createBoxBody(this.mPhysicsWorld, bottomOuter, BodyType.StaticBody, wallFixtureDef);
-		PhysicsFactory.createBoxBody(this.mPhysicsWorld, topOuter, BodyType.StaticBody, wallFixtureDef);
-		PhysicsFactory.createBoxBody(this.mPhysicsWorld, leftOuter, BodyType.StaticBody, wallFixtureDef);
-		PhysicsFactory.createBoxBody(this.mPhysicsWorld, rightOuter, BodyType.StaticBody, wallFixtureDef);
-
-		
-		this.mScene.attachChild(bottomOuter);
-		this.mScene.attachChild(topOuter);
-		this.mScene.attachChild(leftOuter);
-		this.mScene.attachChild(rightOuter);
-
-		
+    Rectangle[] boxLines=new Rectangle[]{
+    		/*bottomOuter*/	new Rectangle(pointFromX,      height - fatness, width,  fatness, vertexBufferObjectManager),
+    		/*topOuter*/    new Rectangle(pointFromX,      pointFromY,       width,  fatness, vertexBufferObjectManager),
+    		/*leftOuter*/   new Rectangle(pointFromX,      pointFromY,       fatness,height, vertexBufferObjectManager),
+    		/*rightOuter*/  new Rectangle(width - fatness, pointFromY,       2,      height, vertexBufferObjectManager)
+    		};
+    int increment=0;
+	while(increment<4){
+        PhysicsFactory.createBoxBody(this.mPhysicsWorld, boxLines[increment], BodyType.StaticBody, wallFixtureDef);
+		scene.attachChild(boxLines[increment]);
+		increment++;
 	}
+}
 
 	// ===========================================================
 	// Inner and Anonymous Classes

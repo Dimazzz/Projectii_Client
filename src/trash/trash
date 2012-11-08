@@ -1,2 +1,37 @@
 //	gameToast( "xspeed->"+String.valueOf(MainActivity.this.ShipBody.getLinearVelocity().x)+
         	  //  		"yspeed->"+String.valueOf(MainActivity.this.ShipBody.getLinearVelocity().y));
+        	  private Sprite createShip(Vector2 location,Point size,TextureRegion texture,VertexBufferObjectManager vbObjectManager,final BoundCamera camera,Body body,PhysicsWorld physicWorld,Scene scene) {
+		 Sprite newShip = new Sprite(location.x, location.y, size.x, size.y, texture, vbObjectManager)
+	        {
+	                @Override
+	                public boolean onAreaTouched(TouchEvent pSceneTouchEvent,
+	                                float pTouchAreaLocalX, float pTouchAreaLocalY)
+	                {
+						return mFlippedHorizontal;
+	                       
+	                }
+	                @Override
+	                protected void onManagedUpdate(float pSecondsElapsed) {
+	                       	if(isGetToStop)
+	                	       decelerationShip(MainActivity.this.ShipBody ,true);
+	                        super.onManagedUpdate(pSecondsElapsed);
+	                        
+	                        
+	                }
+	        };  
+	        camera.setChaseEntity(newShip);
+	        final FixtureDef carFixtureDef = PhysicsFactory.createFixtureDef(1, 0.5f, 0.5f);
+			body = PhysicsFactory.createBoxBody(physicWorld, newShip, BodyType.DynamicBody, carFixtureDef);
+
+		     physicWorld.registerPhysicsConnector(new PhysicsConnector(newShip, body, true, false){
+				public void onUpdate(float pSecondsElapsed){
+					super.onUpdate(pSecondsElapsed);
+					camera.updateChaseEntity();
+				}
+			});
+			scene.attachChild(newShip);
+			return newShip;
+
+		
+	}
+	
