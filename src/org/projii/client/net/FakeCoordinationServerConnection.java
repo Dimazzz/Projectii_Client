@@ -20,11 +20,11 @@ public class FakeCoordinationServerConnection implements CoordinationServerConne
     @Override
     public List<Spaceship> getMyShips() {
         List<Spaceship> spaceshipList = new ArrayList<>();
-        SpaceshipModel modelA = new SpaceshipModel("LolModelA", 0, 100, 100, 100, 3, 100);
-        SpaceshipModel modelB = new SpaceshipModel("LolModelB", 0, 100, 100, 100, 3, 100);
+        SpaceshipModel modelA = new SpaceshipModel(0, "LolModelA", 100, 100, 100, 3, 100);
+        SpaceshipModel modelB = new SpaceshipModel(0, "LolModelB", 100, 100, 100, 3, 100);
 
         EnergyGenerator generator = new EnergyGenerator(new EnergyGeneratorModel(0, "GeneratorA", 100, 100));
-        EnergyShield shield = new EnergyShield(new EnergyShieldModels(0, "ShieldA", 100, 100, 100));
+        EnergyShield shield = new EnergyShield(new EnergyShieldModel(0, "ShieldA", 100, 100, 100));
         SpaceshipEngine engineA = new SpaceshipEngine(0, 100, 100, 100, "EngineA");
         SpaceshipEngine engineB = new SpaceshipEngine(0, 100, 100, 100, "EngineA");
 
