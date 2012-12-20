@@ -29,7 +29,7 @@ public class BasicCoordinationServerConnection implements CoordinationServerConn
             x.printStackTrace();
         }
     }
-
+                                                                                                                                     X
     private BSONDocument executeRequest(BSONDocument doc) {
         BSONDocument response = null;
         try {
@@ -38,14 +38,6 @@ public class BasicCoordinationServerConnection implements CoordinationServerConn
             sout.write(BSONEncoder.encode(doc).array());
             int read_length;
             byte buf[] = new byte[1024];
-
-//            int time = 0;
-//            while (sin.available() == 0) {
-//                if (time > 10000)
-//                    return null;
-//                Thread.sleep(1000);
-//                time += 1000;
-//            }
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             do {
