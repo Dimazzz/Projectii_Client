@@ -29,7 +29,7 @@ public class BasicCoordinationServerConnection implements CoordinationServerConn
             x.printStackTrace();
         }
     }
-                                                                                                                                     X
+
     private BSONDocument executeRequest(BSONDocument doc) {
         BSONDocument response = null;
         try {
@@ -73,8 +73,9 @@ public class BasicCoordinationServerConnection implements CoordinationServerConn
         request.add("type", CoordinationServerRequests.GET_MY_SHIPS_FULL);
         try {
             BSONDocument response = executeRequest(request);
-            if (response == null)
+            if (response == null) {
                 return null;
+            }
 
             ships = convertShipData(response);
         } catch (Exception x) {
