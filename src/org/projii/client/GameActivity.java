@@ -7,9 +7,7 @@ import java.util.Random;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Point;
 import android.opengl.GLES20;
-import android.util.FloatMath;
 import android.widget.Toast;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -26,17 +24,11 @@ import org.andengine.engine.camera.hud.controls.AnalogOnScreenControl;
 import org.andengine.engine.camera.hud.controls.AnalogOnScreenControl.IAnalogOnScreenControlListener;
 import org.andengine.engine.camera.hud.controls.BaseOnScreenControl;
 import org.andengine.engine.handler.IUpdateHandler;
-import org.andengine.engine.handler.UpdateHandlerList;
-import org.andengine.engine.handler.timer.ITimerCallback;
-import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
-import org.andengine.entity.IEntity;
-import org.andengine.entity.modifier.RotationModifier;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.Scene;
-import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.sprite.TiledSprite;
 import org.andengine.entity.util.FPSLogger;
@@ -45,7 +37,6 @@ import org.andengine.extension.physics.box2d.FixedStepPhysicsWorld;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
-import org.andengine.extension.tmx.TMXTiledMap;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
@@ -56,10 +47,7 @@ import org.andengine.opengl.texture.region.TextureRegion;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
-import org.andengine.util.math.MathUtils;
 import org.projii.client.tools.Size;
-
-import org.projii.*;
 
 
 public class GameActivity extends SimpleBaseGameActivity {
@@ -395,7 +383,7 @@ private void createBorderBox(Scene scene,float pointFromX,float pointFromY,float
 } 
 private void executeSpriteTouchEvent(String buttonName)
 {
-	if(buttonName=="fire"){ shipViewer.shootBullet(mScene,bulletsPool,projectilesToBeAdded,shootingSound);}
+	if(buttonName=="fire"){ shipViewer.shooting(mScene,bulletsPool,projectilesToBeAdded,shootingSound);}
 	if(buttonName=="ultButton1"){GameActivity.this.initializationTatgets(20);}
 	if(buttonName=="ultButton2"){}
 }
