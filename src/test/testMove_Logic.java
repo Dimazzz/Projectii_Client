@@ -10,7 +10,7 @@ import org.junit.Test;
 import org.projii.client.MoveLogic;
 import org.projii.client.RotationAngles;
 import com.badlogic.gdx.math.Vector2;
-import org.projii.client.ShipViewer.MovingType;
+import org.projii.client.ShipModel.MovingType;
 
 public class testMove_Logic {
 	Vector2 joysticPosition=null;

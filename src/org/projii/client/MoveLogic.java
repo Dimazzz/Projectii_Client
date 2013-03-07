@@ -1,7 +1,7 @@
 package org.projii.client;
 
 import org.andengine.util.math.MathUtils;
-import org.projii.client.ShipViewer.MovingType;
+import org.projii.client.ShipModel.MovingType;
 
 import android.util.Log;
 

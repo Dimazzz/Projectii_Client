@@ -46,6 +46,7 @@ import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.texture.region.TextureRegion;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
+import org.andengine.ui.activity.BaseGameActivity;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.projii.client.tools.Size;
 
@@ -87,15 +88,13 @@ public class GameActivity extends SimpleBaseGameActivity {
     private SpritePool targetsPool;
 	private PhysicsWorld mPhysicsWorld;
 
-    private ShipViewer shipViewer;
+    private ShipModel shipViewer;
 	
-	private BitmapTextureAtlas mBitmapTextureAtlas;
 	private ITiledTextureRegion mBadgeTextureRegion;
 	
 	private Sound explosionSound;
 	private BitmapTextureAtlas mHUDTexture;
 	private TiledTextureRegion mToggleButtonTextureRegion;
-	private Sound quueSound;
 
 	//==========================================================
 
@@ -127,7 +126,7 @@ public class GameActivity extends SimpleBaseGameActivity {
 		this.mHUDTexture.load();
 
 		this.mship2TextureAtlas = new BitmapTextureAtlas(this.getTextureManager(), 320,80, TextureOptions.BILINEAR);
-        this.mshipTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mship2TextureAtlas, this, "face_box_tiled.png", 0, 0, 4, 1);
+        this.mshipTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mship2TextureAtlas, this, "face_box_tiled2.png", 0, 0, 4, 1);
     	this.mship2TextureAtlas.load();
        
 
@@ -140,21 +139,23 @@ public class GameActivity extends SimpleBaseGameActivity {
 		this.mBoxTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mBoxTexture, this, "box.png", 0, 0);
 		this.mBoxTexture.load();
 		
-		 shootingSound=getSound("shot.wav");
-         explosionSound=getSound("explosion.wav");
-         quueSound=getSound("queue.wav");
-         backgroundMusic = getMusic("back.wav");
+		 shootingSound=AudioFactory.getSound("shot.wav",this.mEngine,this);
+         explosionSound=AudioFactory.getSound("explosion.wav",this.mEngine,this);
+         backgroundMusic = AudioFactory.getMusic("back.wav",this.mEngine,this);
       
          bulletsPool=new SpritePool(mVehiclesTextureRegion, this.getVertexBufferObjectManager(),10,10);
          targetsPool=new SpritePool(mBoxTextureRegion, this.getVertexBufferObjectManager(),30,52);
 	}
-
-	@Override
-	public Scene onCreateScene() {
-		projectileLL = new LinkedList();
+    private void initializeLists()
+    {
+    	projectileLL = new LinkedList();
 		projectilesToBeAdded = new LinkedList();
 		targetList = new LinkedList();
 		TargetsToBeAdded = new LinkedList();
+    }
+	@Override
+	public Scene onCreateScene() {
+		initializeLists();
 		this.mEngine.registerUpdateHandler(new FPSLogger());
         this.mPhysicsWorld = new FixedStepPhysicsWorld(30, new Vector2(0, 0), false, 8, 1);
 		this.mScene = new GameScene();
@@ -167,7 +168,7 @@ public class GameActivity extends SimpleBaseGameActivity {
 		createBorderBox(mScene, 0, 0, mScene.getWorldSize().getWidth() ,mScene.getWorldSize().getHeight(), 1);
 		final float centerX = (CAMERA_WIDTH ) / 2;
 		final float centerY = (CAMERA_HEIGHT ) / 2;
-		this.shipViewer=new ShipViewer(centerX, centerY, new Size(80,80),mshipTextureRegion , this.getVertexBufferObjectManager(),mPhysicsWorld);
+		this.shipViewer=new ShipModel(centerX, centerY, new Size(80,80),mshipTextureRegion , this.getVertexBufferObjectManager(),mPhysicsWorld);
 	    this.shipViewer.setTimeMovingUpdate(UPDATE_TIME);
         this.mBoundChaseCamera.setChaseEntity(shipViewer.getSprite());
         	this.mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(shipViewer.getSprite(), shipViewer.getBody(), true, false){
@@ -330,14 +331,6 @@ public class GameActivity extends SimpleBaseGameActivity {
 		TargetsToBeAdded.add(box);
 
 	}
-private void showMessage(final String msg,Context context) {
-	    this.runOnUiThread(new Runnable() {
-	        @Override
-	       public void run() {
-	           Toast.makeText(GameActivity.this, msg, Toast.LENGTH_SHORT).show();
-	        } 
-	    });
-	}
 private TiledSprite createButtonTiledSprite(final String function,int positionX,int positionY,int width,int height, ITiledTextureRegion BadgeTextureRegion, VertexBufferObjectManager objectManager)
 {
 	final TiledSprite sprite = new TiledSprite(positionX, positionY,width,height, BadgeTextureRegion, objectManager) {
@@ -387,39 +380,7 @@ private void executeSpriteTouchEvent(String buttonName)
 	if(buttonName=="ultButton1"){GameActivity.this.initializationTatgets(20);}
 	if(buttonName=="ultButton2"){}
 }
-private Music getMusic(String pathToMusic)
-{
-	Music music = null;
-	 MusicFactory.setAssetBasePath("mfx/");
 
-     try {
-         music = MusicFactory.createMusicFromAsset(mEngine
-             .getMusicManager(), this, pathToMusic);
-         music.setLooping(true);
-     } catch (IllegalStateException e) {
-         e.printStackTrace();
-     } catch (IOException e) {
-         e.printStackTrace();
-     }
-	return music;
-}
-private Sound getSound(String pathToSound)
-{
-	Sound sound = null ;
-	 SoundFactory.setAssetBasePath("mfx/");
-     try {
-         sound = SoundFactory.createSoundFromAsset(mEngine
-             .getSoundManager(), this, pathToSound);
-     } catch (IllegalStateException e) {
-         e.printStackTrace();
-     } catch (IOException e) {
-         e.printStackTrace();
-     }	
-     return sound;
-}
-private void setTextures(BitmapTextureAtlas BitmapTextureAtlas, TextureRegion BadgeTextureRegion,int height,int width,String pathToFile){
-	BadgeTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(BitmapTextureAtlas, this, pathToFile, 150, 0);
-	BitmapTextureAtlas.load();
-}
+
 
 }
