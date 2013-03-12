@@ -1,8 +1,13 @@
 <resources>
 
-    <string name="app_name">MovingSamples</string>
+    <string name="app_name">Trolol</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_ship_structure">ShipStructureActivity</string>
+    <string name="title_activity_join_game">JoinGameActivity</string>
+    <string name="title_activity_ship">ShipActivity</string>
+    <string name="title_activity_ship_description">ShipDescriptionActivity</string>
 
 </resources>
