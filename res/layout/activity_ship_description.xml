@@ -1,0 +1,405 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background" >
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true" >
+
+        <TextView
+            android:id="@+id/txtHelth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="30dp"
+            android:text="Health" />
+        <TextView
+            android:id="@+id/txtHelthValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/txtHelth"
+            android:layout_alignBottom="@+id/txtHelth"
+            android:layout_toRightOf="@+id/txtHelth"
+            android:layout_marginLeft="10dp"
+            android:text="3561" />
+        
+
+        <TextView
+            android:id="@+id/txtArmor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/txtHelth"
+            android:layout_below="@+id/txtHelth"
+            android:layout_marginTop="8dp"
+            android:text="Armor" />
+        <TextView
+            android:id="@+id/txtArmorValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/txtArmor"
+            android:layout_alignBottom="@+id/txtArmor"
+            android:layout_toRightOf="@+id/txtArmor"
+            android:layout_marginLeft="10dp"
+            android:text="35" />
+        
+        
+        <TextView
+            android:id="@+id/txtEnergyShield"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/txtArmor"
+            android:layout_below="@+id/txtArmor"
+            android:layout_marginTop="10dp"
+            android:text="EnergyShield" />
+        <TextView
+            android:id="@+id/txtEnergyShieldValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/txtEnergyShield"
+            android:layout_alignBottom="@+id/txtEnergyShield"
+            android:layout_toRightOf="@+id/txtEnergyShield"
+            android:layout_marginLeft="6dp"
+            android:text="1536" />
+        <TextView
+            android:id="@+id/txtEnergyShieldRegeneration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/txtEnergyShieldValue"
+            android:layout_alignBottom="@+id/txtEnergyShieldValue"
+            android:layout_toRightOf="@+id/txtEnergyShieldValue"
+            android:layout_marginLeft="10dp"
+            android:text="Regeneration" />
+        <TextView
+            android:id="@+id/txtEnergyShieldRegenerationValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/txtEnergyShieldRegeneration"
+            android:layout_alignBottom="@+id/txtEnergyShieldRegeneration"
+            android:layout_toRightOf="@+id/txtEnergyShieldRegeneration"
+            android:layout_marginLeft="6dp"
+            android:text="123" />
+
+        <TextView
+            android:id="@+id/txtEngine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/txtEnergyShield"
+            android:layout_below="@+id/txtEnergyShield"
+            android:layout_marginTop="8dp"
+            android:text="Engine" />
+       <TextView
+            android:id="@+id/txtEngineMaxSpeed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/txtEngine"
+            android:layout_alignBottom="@+id/txtEngine"
+            android:layout_toRightOf="@+id/txtEngine"
+            android:layout_marginLeft="6dp"
+            android:text="MaxSpeed" />
+       <TextView
+            android:id="@+id/txtEngineMaxSpeedValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/txtEngineMaxSpeed"
+            android:layout_alignBottom="@+id/txtEngineMaxSpeed"
+            android:layout_toRightOf="@+id/txtEngineMaxSpeed"
+            android:layout_marginLeft="6dp"
+            android:text="99" />
+       <TextView
+            android:id="@+id/txtEngineSpeedUp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/txtEngineMaxSpeedValue"
+            android:layout_alignBottom="@+id/txtEngineMaxSpeedValue"
+            android:layout_toRightOf="@+id/txtEngineMaxSpeedValue"
+            android:layout_marginLeft="6dp"
+            android:text="SpeedUp" />
+       <TextView
+            android:id="@+id/txtEngineSpeedUpValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/txtEngineSpeedUp"
+            android:layout_alignBottom="@+id/txtEngineSpeedUp"
+            android:layout_toRightOf="@+id/txtEngineSpeedUp"
+            android:layout_marginLeft="6dp"
+            android:text="9" />
+
+       
+       
+        <TextView
+            android:id="@+id/txtGenerator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/txtEngine"
+            android:layout_below="@+id/txtEngine"
+            android:layout_marginTop="8dp"
+            android:text="Generator" />
+		<TextView
+            android:id="@+id/txtGeneratorValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/txtGenerator"
+            android:layout_alignBottom="@+id/txtGenerator"
+            android:layout_toRightOf="@+id/txtGenerator"
+            android:layout_marginLeft="6dp"
+            android:text="289" />
+	    <TextView
+            android:id="@+id/txtGeneratorRegeneration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/txtGeneratorValue"
+            android:layout_alignBottom="@+id/txtGeneratorValue"
+            android:layout_toRightOf="@+id/txtGeneratorValue"
+            android:layout_marginLeft="6dp"
+            android:text="Regeneration" />
+	    <TextView
+            android:id="@+id/txtGeneratorRegenerationValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/txtGeneratorRegeneration"
+            android:layout_alignBottom="@+id/txtGeneratorRegeneration"
+            android:layout_toRightOf="@+id/txtGeneratorRegeneration"
+            android:layout_marginLeft="6dp"
+            android:text="20" />
+		
+	    
+	    
+        <TextView
+            android:id="@+id/txtWeapon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/txtGenerator"
+            android:layout_below="@+id/txtGenerator"
+            android:layout_marginTop="14dp"
+            android:text="Weapon" />
+
+        <TextView
+            android:id="@+id/txtWeapon1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/txtWeapon"
+            android:layout_below="@+id/txtWeapon"
+            android:layout_marginTop="8dp"
+            android:text="Blaster" />
+        <TextView
+            android:id="@+id/txtWeapon1Damage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/txtWeapon1"
+            android:layout_alignBottom="@+id/txtWeapon1"
+            android:layout_toRightOf="@+id/txtWeapon1"
+            android:layout_marginLeft="6dp"
+            android:text="Damage" />
+        <TextView
+            android:id="@+id/txtWeapon1DamageValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/txtWeapon1Damage"
+            android:layout_alignBottom="@+id/txtWeapon1Damage"
+            android:layout_toRightOf="@+id/txtWeapon1Damage"
+            android:layout_marginLeft="6dp"
+            android:text="30" />
+        <TextView
+            android:id="@+id/txtWeapon1CoolDown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/txtWeapon1DamageValue"
+            android:layout_alignBottom="@+id/txtWeapon1DamageValue"
+            android:layout_toRightOf="@+id/txtWeapon1DamageValue"
+            android:layout_marginLeft="6dp"
+            android:text="CoolDown" />
+		<TextView
+            android:id="@+id/txtWeapon1CoolDownValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/txtWeapon1CoolDown"
+            android:layout_alignBottom="@+id/txtWeapon1CoolDown"
+            android:layout_toRightOf="@+id/txtWeapon1CoolDown"
+            android:layout_marginLeft="6dp"
+            android:text="20" />
+		
+		
+        <TextView
+            android:id="@+id/txtWeapon2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/txtWeapon1"
+            android:layout_below="@+id/txtWeapon1"
+            android:layout_marginTop="8dp"
+            android:text="Laser" />
+        <TextView
+            android:id="@+id/txtWeapon2Damage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/txtWeapon2"
+            android:layout_alignBottom="@+id/txtWeapon2"
+            android:layout_toRightOf="@+id/txtWeapon2"
+            android:layout_marginLeft="6dp"
+            android:text="Damage" />
+        <TextView
+            android:id="@+id/txtWeapon2DamageValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/txtWeapon2Damage"
+            android:layout_alignBottom="@+id/txtWeapon2Damage"
+            android:layout_toRightOf="@+id/txtWeapon2Damage"
+            android:layout_marginLeft="6dp"
+            android:text="30" />
+        <TextView
+            android:id="@+id/txtWeapon2CoolDown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/txtWeapon2DamageValue"
+            android:layout_alignBottom="@+id/txtWeapon2DamageValue"
+            android:layout_toRightOf="@+id/txtWeapon2DamageValue"
+            android:layout_marginLeft="6dp"
+            android:text="CoolDown" />
+		<TextView
+            android:id="@+id/txtWeapon2CoolDownValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/txtWeapon2CoolDown"
+            android:layout_alignBottom="@+id/txtWeapon2CoolDown"
+            android:layout_toRightOf="@+id/txtWeapon2CoolDown"
+            android:layout_marginLeft="6dp"
+            android:text="20" />
+		
+		
+		
+        <TextView
+            android:id="@+id/txtWeapon3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/txtWeapon2"
+            android:layout_below="@+id/txtWeapon2"
+            android:layout_marginTop="8dp"
+            android:text="Laser" />
+		        <TextView
+            android:id="@+id/txtWeapon3Damage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/txtWeapon3"
+            android:layout_alignBottom="@+id/txtWeapon3"
+            android:layout_toRightOf="@+id/txtWeapon3"
+            android:layout_marginLeft="6dp"
+            android:text="Damage" />
+        <TextView
+            android:id="@+id/txtWeapon3DamageValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/txtWeapon3Damage"
+            android:layout_alignBottom="@+id/txtWeapon3Damage"
+            android:layout_toRightOf="@+id/txtWeapon3Damage"
+            android:layout_marginLeft="6dp"
+            android:text="30" />
+        <TextView
+            android:id="@+id/txtWeapon3CoolDown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/txtWeapon3DamageValue"
+            android:layout_alignBottom="@+id/txtWeapon3DamageValue"
+            android:layout_toRightOf="@+id/txtWeapon3DamageValue"
+            android:layout_marginLeft="6dp"
+            android:text="CoolDown" />
+		<TextView
+            android:id="@+id/txtWeapon3CoolDownValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/txtWeapon3CoolDown"
+            android:layout_alignBottom="@+id/txtWeapon3CoolDown"
+            android:layout_toRightOf="@+id/txtWeapon3CoolDown"
+            android:layout_marginLeft="6dp"
+            android:text="20" />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/relativeLayout1" >
+
+        <Button
+            android:id="@+id/btnWeapon1"
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="70dp"
+            android:background="@drawable/button"
+            android:text="Weapon1" />
+
+        <Button
+            android:id="@+id/btnWeapon3"
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:layout_alignBaseline="@+id/btnWeapon2"
+            android:layout_alignBottom="@+id/btnWeapon2"
+            android:layout_toRightOf="@+id/btnWeapon1"
+            android:background="@drawable/button"
+            android:text="Weapon3" />
+
+        <Button
+            android:id="@+id/btnWeapon2"
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:layout_alignTop="@+id/btnWeapon1"
+            android:layout_marginTop="15dp"
+            android:layout_toLeftOf="@+id/btnWeapon1"
+            android:background="@drawable/button"
+            android:text="Weapon2" />
+
+        <Button
+            android:id="@+id/btnShip"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/btnWeapon1"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/button"
+            android:text="SHIP" />
+
+        <Button
+            android:id="@+id/btnShield"
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:layout_below="@+id/btnShip"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/button"
+            android:text="Shield" />
+
+        <Button
+            android:id="@+id/btnEngine"
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:layout_below="@+id/btnShip"
+            android:layout_marginTop="15dp"
+            android:layout_toLeftOf="@+id/btnShield"
+            android:background="@drawable/button"
+            android:text="Engine" />
+
+        <Button
+            android:id="@+id/btnGenerator"
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:layout_alignBaseline="@+id/btnEngine"
+            android:layout_alignBottom="@+id/btnEngine"
+            android:layout_toRightOf="@+id/btnShield"
+            android:background="@drawable/button"
+            android:text="Generator" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

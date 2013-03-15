@@ -1,0 +1,252 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background" >
+
+   <RelativeLayout
+       android:id="@+id/linearLayoutTop"
+       android:layout_width="wrap_content"
+       android:layout_height="40dp"
+       android:layout_alignParentLeft="true"
+       android:layout_alignParentRight="true"
+       android:layout_alignParentTop="true"
+       android:gravity="center" >
+
+       <Button
+           android:id="@+id/btnInfo"
+           android:layout_width="80dp"
+           android:layout_height="wrap_content"
+           android:layout_gravity="center"
+           android:background="@drawable/button"
+           android:text="Information" />
+
+       <Button
+           android:id="@+id/btnJoin"
+           android:layout_width="110dp"
+           android:layout_height="wrap_content"
+           android:layout_alignParentRight="true"
+           android:layout_alignParentTop="true"
+           android:background="@drawable/button"
+           android:text="Join Game" />
+
+       <Button
+           android:id="@+id/btnShipBranch"
+           android:layout_width="50dp"
+           android:layout_height="36dp"
+           android:layout_alignParentBottom="true"
+           android:layout_marginLeft="21dp"
+           android:layout_toRightOf="@+id/btnInfo"
+           android:background="@drawable/button2_small" />
+
+       <Button
+           android:id="@+id/btnShip1"
+           android:layout_width="50dp"
+           android:layout_height="36dp"
+           android:layout_alignParentBottom="true"
+           android:layout_toRightOf="@+id/btnShipBranch"
+           android:background="@drawable/button2_small" />
+
+       <Button
+           android:id="@+id/btnShip2"
+           android:layout_width="50dp"
+           android:layout_height="36dp"
+           android:layout_alignParentBottom="true"
+           android:layout_toRightOf="@+id/btnShip1"
+           android:background="@drawable/button2_small" />
+
+       <Button
+           android:id="@+id/btnShip3"
+           android:layout_width="50dp"
+           android:layout_height="36dp"
+           android:layout_alignParentBottom="true"
+           android:layout_toRightOf="@+id/btnShip2"
+           android:background="@drawable/button2_small" />
+
+       <TextView
+           android:id="@+id/textViewCredit"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_alignBaseline="@+id/btnShip3"
+           android:layout_alignBottom="@+id/btnShip3"
+           android:layout_marginRight="24dp"
+           android:layout_toLeftOf="@+id/btnJoin"
+           android:text="1123 Credit" />
+
+   </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/LayoutLeft"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/linearLayoutMid"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/linearLayoutTop"
+        android:gravity="top"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/btnEngine"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="50dp"
+            android:layout_height="36dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/linearLayoutTop"
+            android:layout_marginTop="19dp"
+            android:background="@drawable/button2_small" />
+
+        <Button
+            android:id="@+id/btnGenerator"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="50dp"
+            android:layout_height="36dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/btnEngine"
+            android:layout_marginTop="19dp"
+            android:background="@drawable/button2_small" />
+
+        <Button
+            android:id="@+id/btnShield"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="50dp"
+            android:layout_height="36dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/btnGenerator"
+            android:layout_marginTop="19dp"
+            android:background="@drawable/button2_small" />
+
+        <Button
+            android:id="@+id/btnWeapon"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="50dp"
+            android:layout_height="36dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/btnShield"
+            android:layout_marginTop="19dp"
+            android:background="@drawable/button2_small" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/linearLayoutBot"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true" >
+
+        <RelativeLayout
+            android:id="@+id/relativeLayoutBotLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/relativeLayoutBotRigth" >
+
+            <TextView
+                android:id="@+id/textViewName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="29dp"
+                android:text="NameModel" />
+
+            <TextView
+                android:id="@+id/textViewOpisanie"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/textViewName"
+                android:layout_centerVertical="true"
+                android:text="Описание скила, увеличивает скорость вашего корабля"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            <TextView
+                android:id="@+id/textViewBase"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/textViewOpisanie"
+                android:layout_alignParentBottom="true"
+                android:text="Current 20 + 5" />
+
+            <TextView
+                android:id="@+id/textViewNext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="45dp"
+                android:layout_toRightOf="@+id/textViewBase"
+                android:text="Next 20 + 15" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/relativeLayoutBotRigth"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:gravity="center" >
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:text="13470"
+             />
+
+            <Button
+                android:id="@+id/btnUpdate"
+                android:layout_width="100dp"
+                android:layout_height="25dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:background="@drawable/button"
+                android:text="Update" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+     
+    <LinearLayout
+        android:id="@+id/linearLayoutMid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/linearLayoutBot"
+        android:layout_below="@+id/linearLayoutTop"
+        android:layout_toRightOf="@+id/LayoutLeft" >
+
+        <HorizontalScrollView
+            android:id="@+id/horizontalScrollView1"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1.50"
+            android:background="@drawable/fon" >
+
+            <RelativeLayout
+                android:id="@+id/relativeLayoutBranch"
+                android:layout_width="750dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/engine" >
+
+                	<View
+                	    android:id="@+id/viewEngineSpeed1"
+                	    android:layout_width="206dp"
+                	    android:layout_height="33dp"
+                	    android:layout_alignParentLeft="true"
+                	    android:layout_alignParentTop="true"
+                	    android:layout_marginTop="27dp" />
+
+            </RelativeLayout>
+        </HorizontalScrollView>
+    </LinearLayout>
+
+</RelativeLayout>

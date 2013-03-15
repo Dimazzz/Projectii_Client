@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    android:gravity="center"
+    android:orientation="horizontal" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:visibility="visible" >
+
+        <Button
+            android:id="@+id/btnLogin"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="50dp"
+            android:layout_marginLeft="70dp"
+            android:background="@drawable/button"
+            android:text="Login" />
+
+        <Button
+            android:id="@+id/btnExit"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_alignBaseline="@+id/btnLogin"
+            android:layout_alignBottom="@+id/btnLogin"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="66dp"
+            android:background="@drawable/button"
+            android:text="Exit" />
+
+        <EditText
+            android:id="@+id/edtLogin"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_alignLeft="@+id/btnLogin"
+            android:layout_alignParentTop="true"
+            android:layout_alignRight="@+id/btnExit"
+            android:layout_marginTop="23dp"
+            android:ems="10"
+            android:inputType="textPersonName" />
+
+        <EditText
+            android:id="@+id/edtPass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/btnLogin"
+            android:layout_alignRight="@+id/edtLogin"
+            android:layout_below="@+id/edtLogin"
+            android:ems="10"
+            android:inputType="textPassword" >
+        </EditText>
+
+        <CheckBox
+            android:id="@+id/checkBox1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/edtPass"
+            android:layout_below="@+id/edtPass"
+            android:text="Login in automatically" />
+
+    </RelativeLayout>
+
+</LinearLayout>

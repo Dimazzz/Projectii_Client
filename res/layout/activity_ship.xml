@@ -1,0 +1,57 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    android:gravity="center_horizontal" >
+
+   <Button
+       android:id="@+id/btnShip2"
+       android:layout_width="140dp"
+       android:layout_height="120dp"
+       android:layout_centerHorizontal="true"
+       android:layout_centerVertical="true"
+       android:background="@drawable/button2_small"
+       android:text="Create Ship" />
+   <Button
+       android:id="@+id/btnShip3"
+       android:layout_width="140dp"
+       android:layout_height="120dp"
+       android:layout_centerVertical="true"
+       android:layout_marginLeft="40dp"
+       android:layout_toRightOf="@+id/btnShip2"
+       android:background="@drawable/button2_small"
+       android:text="Create Ship" />
+   <Button
+       android:id="@+id/btnShip1"
+       android:layout_width="140dp"
+       android:layout_height="120dp"
+       android:layout_centerVertical="true"
+       android:layout_marginRight="40dp"
+       android:layout_toLeftOf="@+id/btnShip2"
+       android:background="@drawable/button2_small"
+       android:text="Ship 1" />
+
+   <Button
+       android:id="@+id/btnShipSetting"
+       android:layout_width="100dp"
+       android:layout_height="30dp"
+       android:layout_alignParentBottom="true"
+       android:layout_alignParentLeft="true"
+       android:layout_alignRight="@+id/btnShip1"
+       android:background="@drawable/button"
+       android:text="Ship Setting" />
+
+   <Button
+       android:id="@+id/btnJoinGame"
+       android:layout_width="100dp"
+       android:layout_height="30dp"
+       android:layout_alignLeft="@+id/btnShip3"
+       android:layout_alignParentBottom="true"
+       android:layout_alignParentRight="true"
+       android:background="@drawable/button"
+       android:text="Join Game" />
+
+</RelativeLayout>
+
+
