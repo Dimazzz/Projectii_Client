@@ -19,7 +19,7 @@ public class FakeCoordinationServerConnection implements CoordinationServerConne
 
     @Override
     public List<Spaceship> getMyShips() {
-        List<Spaceship> spaceshipList = new ArrayList<>();
+        List<Spaceship> spaceshipList = new ArrayList<Spaceship>();
         SpaceshipModel modelA = new SpaceshipModel(0, "LolModelA", 100, 100, 100, 3, 100);
         SpaceshipModel modelB = new SpaceshipModel(0, "LolModelB", 100, 100, 100, 3, 100);
 
@@ -36,7 +36,7 @@ public class FakeCoordinationServerConnection implements CoordinationServerConne
 
     @Override
     public List<GameInfo> getGamesList() {
-        List<GameInfo> gameInfoList = new ArrayList<>();
+        List<GameInfo> gameInfoList = new ArrayList<GameInfo>();
         gameInfoList.add(new GameInfo(0, "localhost", "map0", 0, 10));
         gameInfoList.add(new GameInfo(1, "::", "map42", 5, 5));
         gameInfoList.add(new GameInfo(2, "127.0.0.1", "map123", 0, 10));

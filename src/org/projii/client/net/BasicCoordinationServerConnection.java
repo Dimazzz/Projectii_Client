@@ -22,7 +22,7 @@ public class BasicCoordinationServerConnection implements CoordinationServerConn
 
     private Socket socket;
 
-    public BasicCoordinationServerConnection(String address, int port) {
+    public BasicCoordinationServerConnection(String address, Integer port) {
         try {
             socket = new Socket(address, port);
         } catch (Exception x) {
@@ -36,7 +36,7 @@ public class BasicCoordinationServerConnection implements CoordinationServerConn
             InputStream sin = socket.getInputStream();
             OutputStream sout = socket.getOutputStream();
             sout.write(BSONEncoder.encode(doc).array());
-            int read_length;
+            Integer read_length;
             byte buf[] = new byte[1024];
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -60,7 +60,7 @@ public class BasicCoordinationServerConnection implements CoordinationServerConn
         request.add("password", password);
         try {
             BSONDocument response = executeRequest(request);
-            result = response != null && (byte) response.get("result") > 0;
+            result = response != null && (Byte) response.get("result") > 0;
         } catch (Exception x) {
             x.printStackTrace();
         }
@@ -85,8 +85,8 @@ public class BasicCoordinationServerConnection implements CoordinationServerConn
     }
 
     private List<Spaceship> convertShipData(BSONDocument response) {
-        List<Spaceship> ships = new LinkedList<>();
-        int count, id;
+        List<Spaceship> ships = new LinkedList<Spaceship>();
+        Integer count, id;
 
         SpaceshipModel shipModel = null;
         Weapon[] shipWeapons;
@@ -104,40 +104,40 @@ public class BasicCoordinationServerConnection implements CoordinationServerConn
         BSONDocument spaceship, weapons;
         List<Integer> weaponsId;
 
-        for (int i = 0; i < spaceships.size(); i++) {
+        for (Integer i = 0; i < spaceships.size(); i++) {
             spaceship = (BSONDocument) spaceships.get(i + "");
             weapons = (BSONDocument) spaceship.get("weapons");
-            weaponsId = new LinkedList<>();
+            weaponsId = new LinkedList<Integer>();
             for (count = 0; count < weapons.size() - 1; count++) {
                 weaponsId.add((Integer) weapons.get(count + ""));
             }
             shipWeapons = new Weapon[weaponsId.size() - 1];
 
-            for (count = 0, id = (int) spaceship.get("modelId"); count < spaceshipModels.size(); count++) {
+            for (count = 0, id = (Integer) spaceship.get("modelId"); count < spaceshipModels.size(); count++) {
                 if (id == spaceshipModels.get(count).id) {
                     shipModel = spaceshipModels.get(count);
                     break;
                 }
             }
-            for (count = 0, id = (int) spaceship.get("engineId"); count < engineModels.size(); count++) {
+            for (count = 0, id = (Integer) spaceship.get("engineId"); count < engineModels.size(); count++) {
                 if (id == engineModels.get(count).getId()) {
                     shipEngine = engineModels.get(count);
                     break;
                 }
             }
-            for (count = 0, id = (int) spaceship.get("shieldId"); count < shieldModels.size(); count++) {
+            for (count = 0, id = (Integer) spaceship.get("shieldId"); count < shieldModels.size(); count++) {
                 if (id == shieldModels.get(count).id) {
                     shipShield = new EnergyShield(shieldModels.get(count));
                     break;
                 }
             }
-            for (count = 0, id = (int) spaceship.get("generatorId"); count < generatorModels.size(); count++) {
+            for (count = 0, id = (Integer) spaceship.get("generatorId"); count < generatorModels.size(); count++) {
                 if (id == generatorModels.get(count).id) {
                     shipGenerator = new EnergyGenerator(generatorModels.get(count));
                     break;
                 }
             }
-            for (int j = 0; j < weaponsId.size(); j++) {
+            for (Integer j = 0; j < weaponsId.size(); j++) {
                 for (count = 0, id = weaponsId.get(j); count < weaponModels.size() - 1; count++) {
                     if (id == weaponModels.get(count).getId()) {
                         shipWeapons[j] = new Weapon(weaponModels.get(count));
@@ -146,28 +146,28 @@ public class BasicCoordinationServerConnection implements CoordinationServerConn
                 }
             }
 
-            id = (int) spaceship.get("id");
+            id = (Integer) spaceship.get("id");
             ships.add(new Spaceship(id, shipModel, shipWeapons, shipGenerator, shipEngine, shipShield));
         }
         return ships;
     }
 
     private List<WeaponModel> getWeaponModels(BSONDocument response) {
-        List<WeaponModel> weaponModels = new LinkedList<>();
+        List<WeaponModel> weaponModels = new LinkedList<WeaponModel>();
         BSONDocument wm;
         BSONDocument weaponModelsInfo = (BSONDocument) response.get("weapons");
-        for (int i = 0; i < weaponModelsInfo.size(); i++) {
+        for (Integer i = 0; i < weaponModelsInfo.size(); i++) {
             wm = (BSONDocument) weaponModelsInfo.get(i + "");
-            int weaponModelId = (int) wm.get("id");
+            Integer weaponModelId = (Integer) wm.get("id");
             String name = (String) wm.get("name");
-            int rate = (int) wm.get("rate");
-            int weaponType = (int) wm.get("type");
-            int bulletSpeed = (int) wm.get("projectileSpeed");
-            int damage = (int) wm.get("damage");
-            int energyConsumption = (int) wm.get("energyConsumption");
-            int distance = (int) wm.get("distance");
-            int range = (int) wm.get("range");
-            int cooldown = (int) wm.get("cooldown");
+            Integer rate = (Integer) wm.get("rate");
+            Integer weaponType = (Integer) wm.get("type");
+            Integer bulletSpeed = (Integer) wm.get("projectileSpeed");
+            Integer damage = (Integer) wm.get("damage");
+            Integer energyConsumption = (Integer) wm.get("energyConsumption");
+            Integer distance = (Integer) wm.get("distance");
+            Integer range = (Integer) wm.get("range");
+            Integer cooldown = (Integer) wm.get("cooldown");
             weaponModels.add(new WeaponModel(weaponModelId, name, rate, weaponType, bulletSpeed, damage, energyConsumption,
                     distance, range, cooldown));
         }
@@ -175,33 +175,33 @@ public class BasicCoordinationServerConnection implements CoordinationServerConn
     }
 
     private List<SpaceshipModel> getSpaceshipModels(BSONDocument response) {
-        List<SpaceshipModel> spaceShipModels = new LinkedList<>();
+        List<SpaceshipModel> spaceShipModels = new LinkedList<SpaceshipModel>();
         BSONDocument spaceshipModelInfo;
         BSONDocument spaceshipModelsInfo = (BSONDocument) response.get("spaceshipModels");
-        for (int i = 0; i < spaceshipModelsInfo.size(); i++) {
+        for (Integer i = 0; i < spaceshipModelsInfo.size(); i++) {
             spaceshipModelInfo = (BSONDocument) spaceshipModelsInfo.get(i + "");
-            int spaceshipModelId = (int) spaceshipModelInfo.get("id");
+            Integer spaceshipModelId = (Integer) spaceshipModelInfo.get("id");
             String spaceshipModelName = (String) spaceshipModelInfo.get("name");
-            int health = (int) spaceshipModelInfo.get("health");
-            int width = (int) spaceshipModelInfo.get("width");
-            int length = (int) spaceshipModelInfo.get("length");
-            int armor = (int) spaceshipModelInfo.get("armor");
-            int weaponSlotCount = (int) spaceshipModelInfo.get("weaponSlotCount");
+            Integer health = (Integer) spaceshipModelInfo.get("health");
+            Integer width = (Integer) spaceshipModelInfo.get("width");
+            Integer length = (Integer) spaceshipModelInfo.get("length");
+            Integer armor = (Integer) spaceshipModelInfo.get("armor");
+            Integer weaponSlotCount = (Integer) spaceshipModelInfo.get("weaponSlotCount");
             spaceShipModels.add(new SpaceshipModel(spaceshipModelId, spaceshipModelName, length, width, health, weaponSlotCount, armor));
         }
         return spaceShipModels;
     }
 
     private List<SpaceshipEngine> getSpaceshipEngineModels(BSONDocument response) {
-        List<SpaceshipEngine> engineModels = new LinkedList<>();
+        List<SpaceshipEngine> engineModels = new LinkedList<SpaceshipEngine>();
         BSONDocument engineModel;
         BSONDocument engineModelsInfo = (BSONDocument) response.get("engineModels");
-        for (int i = 0; i < engineModelsInfo.size(); i++) {
+        for (Integer i = 0; i < engineModelsInfo.size(); i++) {
             engineModel = (BSONDocument) engineModelsInfo.get(i + "");
-            int engineModelId = (int) engineModel.get("id");
-            int maneuverability = (int) engineModel.get("maneuverability");
-            int maxSpeed = (int) engineModel.get("maxSpeed");
-            int acceleration = (int) engineModel.get("acceleration");
+            Integer engineModelId = (Integer) engineModel.get("id");
+            Integer maneuverability = (Integer) engineModel.get("maneuverability");
+            Integer maxSpeed = (Integer) engineModel.get("maxSpeed");
+            Integer acceleration = (Integer) engineModel.get("acceleration");
             String engineModelName = (String) engineModel.get("name");
             engineModels.add(new SpaceshipEngine(engineModelId, maxSpeed, acceleration, maneuverability, engineModelName));
         }
@@ -209,15 +209,15 @@ public class BasicCoordinationServerConnection implements CoordinationServerConn
     }
 
     private List<EnergyShieldModel> getEnergyShieldModels(BSONDocument response) {
-        List<EnergyShieldModel> shieldModels = new LinkedList<>();
+        List<EnergyShieldModel> shieldModels = new LinkedList<EnergyShieldModel>();
         BSONDocument shieldModel;
         BSONDocument shieldModelsInfo = (BSONDocument) response.get("shieldModels");
-        for (int i = 0; i < shieldModelsInfo.size(); i++) {
+        for (Integer i = 0; i < shieldModelsInfo.size(); i++) {
             shieldModel = (BSONDocument) shieldModelsInfo.get(i + "");
-            int shieldModelId = (int) shieldModel.get("id");
-            int maxEnergyLevel = (int) shieldModel.get("maxEnergyLevel");
-            int regenerationDelay = (int) shieldModel.get("regenerationDelay");
-            int regenerationSpeed = (int) shieldModel.get("regenerationSpeed");
+            Integer shieldModelId = (Integer) shieldModel.get("id");
+            Integer maxEnergyLevel = (Integer) shieldModel.get("maxEnergyLevel");
+            Integer regenerationDelay = (Integer) shieldModel.get("regenerationDelay");
+            Integer regenerationSpeed = (Integer) shieldModel.get("regenerationSpeed");
             String shieldModelName = (String) shieldModel.get("name");
             shieldModels.add(new EnergyShieldModel(shieldModelId, shieldModelName, maxEnergyLevel, regenerationSpeed, regenerationDelay));
         }
@@ -225,14 +225,14 @@ public class BasicCoordinationServerConnection implements CoordinationServerConn
     }
 
     private List<EnergyGeneratorModel> getEnergyGeneratorModels(BSONDocument response) {
-        List<EnergyGeneratorModel> generatorModels = new LinkedList<>();
+        List<EnergyGeneratorModel> generatorModels = new LinkedList<EnergyGeneratorModel>();
         BSONDocument generatorModel;
         BSONDocument generatorModelsInfo = (BSONDocument) response.get("generatorModels");
-        for (int i = 0; i < generatorModelsInfo.size(); i++) {
+        for (Integer i = 0; i < generatorModelsInfo.size(); i++) {
             generatorModel = (BSONDocument) generatorModelsInfo.get(i + "");
-            int modelId = (int) generatorModel.get("id");
-            int maxEnergyLevel = (int) generatorModel.get("maxEnergyLevel");
-            int regenerationSpeed = (int) generatorModel.get("regenerationSpeed");
+            Integer modelId = (Integer) generatorModel.get("id");
+            Integer maxEnergyLevel = (Integer) generatorModel.get("maxEnergyLevel");
+            Integer regenerationSpeed = (Integer) generatorModel.get("regenerationSpeed");
             String generatorModelName = (String) generatorModel.get("name");
             generatorModels.add(new EnergyGeneratorModel(modelId, generatorModelName, maxEnergyLevel, regenerationSpeed));
         }
@@ -245,12 +245,12 @@ public class BasicCoordinationServerConnection implements CoordinationServerConn
         request.add("type", CoordinationServerRequests.GET_GAMES);
         try {
             BSONDocument response = executeRequest(request);
-            if (response == null || response.get("type") != CoordinationServerResponses.GAMES) {
+            if (response == null || (Integer)response.get("type") != CoordinationServerResponses.GAMES) {
                 return null;
             }
             BSONDocument document = (BSONDocument) response.get("games");
 
-            games = new LinkedList<>();
+            games = new LinkedList<GameInfo>();
             for (BSONDocumentElement bsonDocumentElement : document) {
                 GameInfo gameInfo = BSONSerializer.deserialize(GameInfo.class, (BSONDocument) bsonDocumentElement.getValue());
                 games.add(gameInfo);
