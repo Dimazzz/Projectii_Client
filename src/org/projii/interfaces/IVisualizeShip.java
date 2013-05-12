@@ -1,9 +1,10 @@
 package org.projii.interfaces;
 
 import org.andengine.entity.sprite.AnimatedSprite;
-import org.projii.client.RotationAngles;
 
-import com.badlogic.gdx.math.Vector2;
+import org.projii.commons.utils.RotationAngles;
+import org.projii.commons.utils.Vector2;
+
 import com.badlogic.gdx.physics.box2d.Body;
 
 public interface IVisualizeShip extends IVisualizeObject {

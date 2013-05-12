@@ -9,7 +9,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.opengl.GLES20;
 import android.widget.Toast;
-import com.badlogic.gdx.math.Vector2;
+import org.projii.commons.utils.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -48,7 +48,7 @@ import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.ui.activity.BaseGameActivity;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
-import org.projii.client.tools.Size;
+import org.projii.commons.utils.Size;;
 
 
 public class GameActivity extends SimpleBaseGameActivity {
@@ -157,7 +157,7 @@ public class GameActivity extends SimpleBaseGameActivity {
 	public Scene onCreateScene() {
 		initializeLists();
 		this.mEngine.registerUpdateHandler(new FPSLogger());
-        this.mPhysicsWorld = new FixedStepPhysicsWorld(30, new Vector2(0, 0), false, 8, 1);
+        this.mPhysicsWorld = new FixedStepPhysicsWorld(30, new com.badlogic.gdx.math.Vector2(0, 0), false, 8, 1);
 		this.mScene = new GameScene();
 		this.mScene.registerUpdateHandler(this.mPhysicsWorld);
         mScene.SetBackGroundImage("space.png", new Size(1920, 1200), this); 

@@ -16,19 +16,18 @@ import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.math.MathUtils;
-import org.projii.client.tools.Size;
+import org.projii.commons.utils.Size;
 import org.projii.interfaces.IVisualizeShip;
-
-
-
+import org.projii.commons.shipLogic.moveLogic;
+import org.projii.commons.shipLogic.moveLogic.MovingType;
+import org.projii.commons.shipLogic.shootLogic;
+import  org.projii.commons.utils.RotationAngles;
 import android.util.FloatMath;
 import android.util.Log;
-
-import com.badlogic.gdx.math.Vector2;
+import org.projii.commons.utils.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-
  public class ShipModel {
 	
 	private static final float SPEED_BULLET = 1700;
@@ -46,7 +45,6 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
     private float prevAngle=0;
 	private boolean isBraking;
     private	IVisualizeShip visualizator;
-	public enum MovingType { Smooth, OneDirection,Braking,bigAngle}
 	public ShipModel(float locationX,float locationY,Size shipSize,ITiledTextureRegion texture,VertexBufferObjectManager objMan,PhysicsWorld physicsWorld)
 	{
 		ship = new AnimatedSprite(locationX, locationY,shipSize.getWidth(),shipSize.getHeight(), texture, objMan)
@@ -79,14 +77,14 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
     //moving//
 	public void movingShip(Vector2 joysticPosition)
 	{
-		 MovingType currentMovingType=MoveLogic.getMovingType(joysticPosition,betweenRotationsTimeCounter,ship.getRotation(),prevAngle, UPDATE_TIME);
+		 MovingType currentMovingType=moveLogic.getMovingType(joysticPosition,betweenRotationsTimeCounter,ship.getRotation(),prevAngle, UPDATE_TIME);
 		 if(currentMovingType==MovingType.Braking)
 		 {
 		 	 isBraking=true;
 			 return;
 		 }
 		 isBraking=false;
-		 RotationAngles rotationAngles= MoveLogic.calculateAngles(joysticPosition,ship.getRotation());
+		 RotationAngles rotationAngles= moveLogic.calculateAngles(joysticPosition,ship.getRotation());
 		 float newDeltaAngle=Math.abs(rotationAngles.nextAngle-rotationAngles.prevAngle);
 		 Vector2 incrementSpeed=joysticPosition;
 		 switch (currentMovingType) 
@@ -103,7 +101,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 		 		             } 
 		 	      break;
 		    case bigAngle:	{
-		    	                float timeForRotation=MoveLogic.calculateRotationTime(newDeltaAngle, 1);
+		    	                float timeForRotation=moveLogic.calculateRotationTime(newDeltaAngle, 1);
 		    					setSpeed(SPEED_LIMIT, new Vector2(incrementSpeed.x/3,incrementSpeed.y/3),shipBody);
 		    					makeRotation(timeForRotation, rotationAngles,ship,newDeltaAngle);
 		    					//сделать зависимость между
@@ -137,8 +135,9 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 	}
 	
     private void decelerationship(boolean ifSaveMoving){
-		Vector2 brakingSpeed= MoveLogic.getBrakingSpeed(shipBody.getLinearVelocity(), ifSaveMoving);
-    	shipBody.setLinearVelocity(brakingSpeed);//getting previous speed
+    	Vector2 shipLinearVelocity=new Vector2(shipBody.getLinearVelocity().x,shipBody.getLinearVelocity().y);
+		Vector2 brakingSpeed= moveLogic.getBrakingSpeed(shipLinearVelocity, ifSaveMoving);
+    	shipBody.setLinearVelocity(brakingSpeed.x,brakingSpeed.y);//getting previous speed
 	    
 	}
     public AnimatedSprite getSprite()
@@ -194,9 +193,9 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 			float  deltaAngle=50;float shipRotation=ship.getRotation();float shipLeftX=ship.getX();
 			float shipUpY= ship.getY();float shipWidth=ship.getWidth();float shipHeight=ship.getHeight();
 		    //endOfInitialization
-			Vector2 bullet1StartPosition=ShootLogic.getsStartBulletPosition(shipRotation, deltaAngle, shipLeftX, shipUpY, shipWidth, shipHeight);
-			Vector2 bullet2StartPosition=ShootLogic.getsStartBulletPosition(shipRotation, -deltaAngle, shipLeftX, shipUpY, shipWidth, shipHeight);
-			Vector2 AimByLinearDistance=ShootLogic.getAimByLinearDistance(SPEED_BULLET, shipRotation, shipLeftX, shipUpY, shipWidth, shipHeight);
+			Vector2 bullet1StartPosition=shootLogic.getsStartBulletPosition(shipRotation, deltaAngle, shipLeftX, shipUpY, shipWidth, shipHeight);
+			Vector2 bullet2StartPosition=shootLogic.getsStartBulletPosition(shipRotation, -deltaAngle, shipLeftX, shipUpY, shipWidth, shipHeight);
+			Vector2 AimByLinearDistance=shootLogic.getAimByLinearDistance(SPEED_BULLET, shipRotation, shipLeftX, shipUpY, shipWidth, shipHeight);
 			shootLinearBullet(bullet1StartPosition, AimByLinearDistance, scene, bulletPool, bulletsToBeAdded);
 			shootLinearBullet(bullet2StartPosition, AimByLinearDistance, scene, bulletPool, bulletsToBeAdded);
 			timeCounter=0;

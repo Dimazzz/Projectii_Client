@@ -1,5 +1,5 @@
 package test;
-
+/*
 import static org.junit.Assert.*;
 
 import org.junit.After;
@@ -100,4 +100,4 @@ public class testMove_Logic {
 		assertTrue((int)finalSpeed.x==15&&(int)finalSpeed.y==13);
 	}
 
-}
+}*/
