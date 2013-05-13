@@ -1,27 +1,28 @@
 package org.projii.client.net.GameServer.Messages;
 
 import org.jai.BSON.BSONSerializable;
+import org.projii.client.commons.GameState;
 import org.projii.client.net.InteractionMessage;
 import org.projii.client.net.GameServer.GameServerResponses;
 
-public class JoinResponseMessage implements InteractionMessage{
-	
+public class GameStateResponseMessage implements InteractionMessage{
 	@BSONSerializable
 	private final int type;
 	
 	@BSONSerializable
-	private final boolean joinResult;
-
-	public JoinResponseMessage(boolean joinResult) {
-		this.type = GameServerResponses.JOIN_RESULT;
-		this.joinResult = joinResult;
+	private final GameState state;
+	
+	public GameStateResponseMessage(GameState state) {
+		this.type = GameServerResponses.GAMESTATE;
+		this.state = state;
 	}
 	
 	public int getType() {
 		return this.type;
 	}
 	
-	public boolean getJoinResult() {
-		return this.joinResult;
+	public GameState getGameState() {
+		return this.state;
 	}
+
 }

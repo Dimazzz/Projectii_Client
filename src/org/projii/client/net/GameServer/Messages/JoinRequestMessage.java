@@ -7,10 +7,10 @@ import org.projii.client.net.GameServer.GameServerRequests;
 public class JoinRequestMessage implements InteractionMessage{
 	
 	@BSONSerializable
-	private int type;
+	private final int type;
 	
 	@BSONSerializable
-	private long userId;
+	private final long userId;
 	
 	public JoinRequestMessage(long userId) {
 		this.type = GameServerRequests.JOIN_REQUEST;
@@ -18,7 +18,7 @@ public class JoinRequestMessage implements InteractionMessage{
 	}
 	
 	public int getType() {
-		return type;
+		return this.type;
 	}
 	
 	public long getUserId() {

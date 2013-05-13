@@ -1,5 +1,6 @@
 package org.projii.client.commons.spaceship;
 
+import org.jai.BSON.BSONSerializable;
 import org.projii.client.commons.space.Point;
 import org.projii.client.commons.space.RealworldObject;
 import org.projii.client.commons.spaceship.equipment.EnergyGenerator;
@@ -8,11 +9,15 @@ import org.projii.client.commons.spaceship.equipment.SpaceshipEngine;
 import org.projii.client.commons.spaceship.weapon.Weapon;
 
 public class Spaceship extends RealworldObject {
-
+	@BSONSerializable
     private final SpaceshipModel model;
+	@BSONSerializable
     private final Weapon[] weapons;
+	@BSONSerializable
     private final EnergyGenerator generator;
+	@BSONSerializable
     private final SpaceshipEngine engine;
+	@BSONSerializable
     private final EnergyShield energyShield;
 
     public Spaceship(int id, SpaceshipModel model, Weapon[] weapons, EnergyGenerator generator,
