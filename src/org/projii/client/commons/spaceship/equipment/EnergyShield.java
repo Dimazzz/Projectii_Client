@@ -1,8 +1,11 @@
 package org.projii.client.commons.spaceship.equipment;
 
-public class EnergyShield {
+import org.jai.BSON.BSONSerializable;
 
+public class EnergyShield {
+	@BSONSerializable
     private final EnergyShieldModels model;
+	@BSONSerializable
     private int currentEnergyLevel;
 
     public EnergyShield(EnergyShieldModels model, int currentEnergyLevel) {

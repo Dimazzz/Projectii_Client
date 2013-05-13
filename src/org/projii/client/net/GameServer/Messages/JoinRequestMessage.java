@@ -4,20 +4,24 @@ import org.jai.BSON.BSONSerializable;
 import org.projii.client.net.InteractionMessage;
 import org.projii.client.net.GameServer.GameServerRequests;
 
-public class JoinMessage implements InteractionMessage{
+public class JoinRequestMessage implements InteractionMessage{
 	
 	@BSONSerializable
-	private int type;
+	private final int type;
 	
 	@BSONSerializable
-	private long userId;
+	private final long userId;
 	
-	public JoinMessage(long userId) {
-		this.type = GameServerRequests.JOIN;
+	public JoinRequestMessage(long userId) {
+		this.type = GameServerRequests.JOIN_REQUEST;
 		this.userId = userId;
 	}
 	
 	public int getType() {
-		return type;
+		return this.type;
+	}
+	
+	public long getUserId() {
+		return this.userId;
 	}
 }
