@@ -1,12 +1,9 @@
 package org.projii.client.commons.spaceship.weapon;
 
 import org.projii.client.commons.space.Point;
-import org.jai.BSON.BSONSerializable;
 
 public class Weapon {
-	@BSONSerializable
     private WeaponModel model;
-	@BSONSerializable
     private int currentCooldown;
 
     public Weapon(WeaponModel model, int currentCooldown) {

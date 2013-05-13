@@ -7,21 +7,21 @@ import org.projii.client.net.GameServer.GameServerResponses;
 public class JoinResponseMessage implements InteractionMessage{
 	
 	@BSONSerializable
-	private final int type;
+	private int type;
 	
 	@BSONSerializable
-	private final boolean joinResult;
+	private Integer joinResult;
 
-	public JoinResponseMessage(boolean joinResult) {
+	public JoinResponseMessage(Integer joinResult) {
 		this.type = GameServerResponses.JOIN_RESULT;
 		this.joinResult = joinResult;
 	}
 	
 	public int getType() {
-		return this.type;
+		return type;
 	}
 	
-	public boolean getJoinResult() {
+	public Integer getJoinResult() {
 		return this.joinResult;
 	}
 }

@@ -1,27 +1,15 @@
 package org.projii.client.commons.spaceship.weapon;
 
-import org.jai.BSON.BSONSerializable;
-
 public class WeaponModel {
-	@BSONSerializable
     private final int id;
-	@BSONSerializable
     private final int type;
-	@BSONSerializable
     private final String name;
-	@BSONSerializable
     private int rate;
-	@BSONSerializable
     private int projectileSpeed;
-	@BSONSerializable
     private int damage;
-	@BSONSerializable
     private int energyConsumption;
-	@BSONSerializable
     private int distance;
-	@BSONSerializable
     private int range;
-	@BSONSerializable
     private int cooldown;
 
     public WeaponModel(int id, String name, int rate, int type, int projectileSpeed, int damage,

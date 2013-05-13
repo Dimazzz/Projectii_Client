@@ -1,11 +1,8 @@
 package org.projii.client.commons.spaceship.equipment;
 
-import org.jai.BSON.BSONSerializable;
-
 public class EnergyGenerator {
-	@BSONSerializable
+
     private EnergyGeneratorModel model;
-	@BSONSerializable
     private int currentEnergyLevel;
 
     public EnergyGenerator(EnergyGeneratorModel model, int currentEnergyLevel) {

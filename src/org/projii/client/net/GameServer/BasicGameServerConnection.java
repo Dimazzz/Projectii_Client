@@ -5,7 +5,6 @@ import java.net.InetAddress;
 import java.nio.ByteBuffer;
 
 import org.jai.BSON.*;
-import org.projii.client.commons.GameState;
 import org.projii.client.net.GameServer.Messages.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -17,7 +16,6 @@ public class BasicGameServerConnection {
 	private DatagramSocket sk;
 	private String address;
 	private int port;
-	private GameState gameState;
 	
 	public BasicGameServerConnection(String address, int port, long userId) {
 		this.connectionState = new AtomicInteger(ConnectionState.JOIN);
@@ -40,7 +38,7 @@ public class BasicGameServerConnection {
 		return isJoined;
 	}
 	
-	private void runSendData(final BasicGameServerConnection connection) {
+	public void runSendData(final BasicGameServerConnection connection) {
 		new Thread(new Runnable() {
 	        @Override
 	        public void run() {
@@ -49,7 +47,7 @@ public class BasicGameServerConnection {
 	    }).start();	
 	}
 	
-	private void runReceiveData(final BasicGameServerConnection connection) {
+	public void runReceiveData(final BasicGameServerConnection connection) {
 		new Thread(new Runnable() {
 	        @Override
 	        public void run() {
@@ -58,7 +56,7 @@ public class BasicGameServerConnection {
 	    }).start();	
 	}
 	
-	private void sendData() { 
+	public void sendData() { 
 		while (this.connectionState.get() != ConnectionState.OFFLINE) 
 			switch(this.connectionState.get()) {
 			
@@ -81,30 +79,19 @@ public class BasicGameServerConnection {
 			case ConnectionState.WAIT_FOR_GAMESTATE:
 				System.out.println("Waiting for GameState");
 				try {
-					Thread.sleep(5000);
-				} 
-				catch (Exception e) {   
-					e.printStackTrace();
-				}
-				break;
-			case ConnectionState.MOVETO_FIRETO:
-				System.out.println("Sending MoveTo FireTo");
-				try {
-					Thread.sleep(5000);
+					Thread.sleep(500);
 				} 
 				catch (Exception e) {   
 					e.printStackTrace();
 				}
 				break;
 			}
-		
-		
 	}
 			
-	private void receiveData() {
+	public void receiveData() {
 		DatagramPacket dp;
 		byte[] packetData = new byte[65536];
-		int type;
+		Integer type;
 		while (this.connectionState.get() != ConnectionState.OFFLINE) {
 			dp = new DatagramPacket(packetData, packetData.length);
 			try{
@@ -116,24 +103,13 @@ public class BasicGameServerConnection {
 			BSONDocument message = BSONDecoder.decode(ByteBuffer.wrap(packetData));
 			switch(this.connectionState.get()) {
 			case ConnectionState.JOIN:
-				JoinResponseMessage joinResponse = null;
+				JoinResponseMessage response = null;
 				type = (Integer) message.get("type");
-				if (type == GameServerResponses.JOIN_RESULT) {
-					joinResponse = (JoinResponseMessage) BSONSerializer.deserialize(JoinResponseMessage.class, message);
-					if (joinResponse.getJoinResult()) {
-						this.isJoined = true;
-						this.connectionState.set(ConnectionState.WAIT_FOR_GAMESTATE);
-					}
-				}
-				break;
-			case ConnectionState.WAIT_FOR_GAMESTATE:
-				GameStateResponseMessage gameStateResponse = null;
-				type = (Integer) message.get("type");
-				if(type == GameServerResponses.GAMESTATE) {
-					gameStateResponse = (GameStateResponseMessage) BSONSerializer.deserialize(GameStateResponseMessage.class, message);
-					this.gameState = gameStateResponse.getGameState();
-					System.out.println("Data received: " + dp.getLength());
-					this.connectionState.set(ConnectionState.MOVETO_FIRETO);
+				if (type == GameServerResponses.JOIN_RESULT)
+					response = (JoinResponseMessage) BSONSerializer.deserialize(JoinResponseMessage.class, message);
+				if (response.getJoinResult() == 1) {
+					this.isJoined = true;
+					this.connectionState.set(ConnectionState.WAIT_FOR_GAMESTATE);
 				}
 				break;
 			}
