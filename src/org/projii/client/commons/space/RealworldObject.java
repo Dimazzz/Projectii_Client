@@ -1,12 +1,19 @@
 package org.projii.client.commons.space;
 
-public abstract class RealworldObject {
+import org.jai.BSON.BSONSerializable;
 
+public abstract class RealworldObject {
+	@BSONSerializable
     private final int id;
+	@BSONSerializable
     private final int length;
+	@BSONSerializable
     private final int width;
+	@BSONSerializable
     private Point location;
+	@BSONSerializable
     private int rotation;
+	@BSONSerializable
     private int health;
 
     protected RealworldObject(int id, int length, int width, Point location, int rotation, int health) {

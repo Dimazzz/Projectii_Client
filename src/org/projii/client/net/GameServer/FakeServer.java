@@ -10,6 +10,7 @@ import org.projii.client.commons.GameState;
 import org.projii.client.commons.PlayerInfo;
 import org.projii.client.net.GameServer.Messages.*;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -79,6 +80,7 @@ public class FakeServer {
 				BSONDocument joinMessage = BSONSerializer.serialize(new JoinResponseMessage(true));
 				byte[] data = BSONEncoder.encode(joinMessage).array();
 				DatagramPacket dp = new DatagramPacket(data, data.length);
+				System.out.println("JoinResponse packet length: " + data.length);
 				int time = 0;
 				while(time != 3000) {
 					try {
@@ -94,7 +96,16 @@ public class FakeServer {
 				
 				BSONDocument gameStateMessage = BSONSerializer.serialize(new GameStateResponseMessage(this.setGameState()));
 				data = BSONEncoder.encode(gameStateMessage).array();
+				
+				/*
+				BSONDocument message = BSONDecoder.decode(ByteBuffer.wrap(data));
+				GameStateResponseMessage gameStateResponse = (GameStateResponseMessage) BSONSerializer.deserialize(GameStateResponseMessage.class, message);
+				gameStateResponse.getGameState();
+				System.out.println(gameStateResponse.getGameState().players.size()); */
+				
+				
 				dp = new DatagramPacket(data, data.length);
+				System.out.println("GameState packet length: " + data.length);
 				time = 0;			
 				while(time != 3000) {
 					try {
@@ -157,7 +168,7 @@ public class FakeServer {
 		weapons[2] = new Weapon(new WeaponModel(3, "Wep 3", 60, 2, 220, 9, 9, 550, 750, 5), 3);
 		weapons[3] = new Weapon(new WeaponModel(4, "Wep 4", 80, 3, 210, 10, 15, 300, 750, 4), 3);
 		Spaceship ship = new Spaceship(1, shipModel, weapons, generator, engine, shield);
-		List<PlayerInfo> players = new LinkedList<PlayerInfo>();
+		LinkedList<PlayerInfo> players = new LinkedList<PlayerInfo>();
 		players.add(new PlayerInfo((long)1, "Player 1", ship));
 		
 		shipModel = new SpaceshipModel("Ship 2", 2, 55, 35, 510, 5, 5);

@@ -1,15 +1,15 @@
 package org.projii.client.commons;
 
-import java.util.List;
+import java.util.LinkedList;
 
 import org.jai.BSON.BSONSerializable;
 
 
 public class GameState {
 	@BSONSerializable
-	public final List<PlayerInfo> players;
+	public final LinkedList<PlayerInfo> players;
 	
-	public GameState(List<PlayerInfo> info) {
-		this.players = info;
+	public GameState(LinkedList<PlayerInfo> info) {
+		this.players  = info;
 	}
 }

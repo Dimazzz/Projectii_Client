@@ -122,6 +122,7 @@ public class BasicGameServerConnection {
 					joinResponse = (JoinResponseMessage) BSONSerializer.deserialize(JoinResponseMessage.class, message);
 					if (joinResponse.getJoinResult()) {
 						this.isJoined = true;
+						System.out.println("Join data received: " + dp.getLength());
 						this.connectionState.set(ConnectionState.WAIT_FOR_GAMESTATE);
 					}
 				}
@@ -132,7 +133,8 @@ public class BasicGameServerConnection {
 				if(type == GameServerResponses.GAMESTATE) {
 					gameStateResponse = (GameStateResponseMessage) BSONSerializer.deserialize(GameStateResponseMessage.class, message);
 					this.gameState = gameStateResponse.getGameState();
-					System.out.println("Data received: " + dp.getLength());
+					System.out.println("GameState Data received: " + dp.getLength());
+					System.out.println(this.gameState.players.size());
 					this.connectionState.set(ConnectionState.MOVETO_FIRETO);
 				}
 				break;

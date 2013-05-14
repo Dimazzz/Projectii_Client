@@ -1,8 +1,11 @@
 package org.projii.client.commons.space;
 
-public class Point {
+import org.jai.BSON.BSONSerializable;
 
+public class Point {
+	@BSONSerializable
     private int x;
+	@BSONSerializable
     private int y;
 
     public Point(int x, int y) {
