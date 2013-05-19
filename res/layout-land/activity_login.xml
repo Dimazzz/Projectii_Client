@@ -36,6 +36,7 @@
        android:inputType="textNoSuggestions"
        android:nextFocusDown="@+id/Password"
        android:nextFocusUp="@+id/btnLogin"
+       android:text="teamlead mudak"
        android:textColor="@android:color/white" />
 
         <EditText

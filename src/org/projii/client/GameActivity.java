@@ -27,6 +27,7 @@ import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
+import org.andengine.opengl.texture.atlas.bitmap.BuildableBitmapTextureAtlas;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.texture.region.TextureRegion;
@@ -67,9 +68,9 @@ public class GameActivity extends SimpleBaseGameActivity {
 	private Music backgroundMusic;
 	private BoundCamera mBoundChaseCamera;
 	private TiledTextureRegion mshipTextureRegion;
-	private BitmapTextureAtlas mship2TextureAtlas;
+	private BitmapTextureAtlas shipTextureAtlas;
 	private BitmapTextureAtlas mVehiclesTexture;
-	private TextureRegion mVehiclesTextureRegion;
+	private TiledTextureRegion mVehiclesTextureRegion;
 	private BitmapTextureAtlas mBoxTexture;
 	private ITextureRegion mBoxTextureRegion;
 	private BitmapTextureAtlas mOnScreenControlTexture;
@@ -110,7 +111,7 @@ public class GameActivity extends SimpleBaseGameActivity {
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 		
 		this.mVehiclesTexture = new BitmapTextureAtlas(this.getTextureManager(), 184, 184, TextureOptions.BILINEAR);
-		this.mVehiclesTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mVehiclesTexture, this, "pulya.png", 0, 0);
+		this.mVehiclesTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mVehiclesTexture, this, "shots5.png", 0, 0,4,2);
 		this.mVehiclesTexture.load();
 		
 		this.mHUDTexture = new BitmapTextureAtlas(this.getTextureManager(), 512, 128,TextureOptions.BILINEAR);
@@ -118,9 +119,9 @@ public class GameActivity extends SimpleBaseGameActivity {
 		this.mBadgeTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mHUDTexture, this, "hud_button.png", 256, 0,2,1);
 		this.mHUDTexture.load();
 
-		this.mship2TextureAtlas = new BitmapTextureAtlas(this.getTextureManager(), 320,80, TextureOptions.BILINEAR);
-        this.mshipTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mship2TextureAtlas, this, "face_box_tiled2.png", 0, 0, 4, 1);
-    	this.mship2TextureAtlas.load();
+		this.shipTextureAtlas = new BitmapTextureAtlas(this.getTextureManager(), 320,80, TextureOptions.BILINEAR);
+        this.mshipTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.shipTextureAtlas, this, "face_box_tiled2.png", 0, 0, 4, 1);
+    	this.shipTextureAtlas.load();
        
 
 		this.mOnScreenControlTexture = new BitmapTextureAtlas(this.getTextureManager(), 256, 128, TextureOptions.BILINEAR);
@@ -136,7 +137,7 @@ public class GameActivity extends SimpleBaseGameActivity {
          explosionSound=AudioFactory.getSound("explosion.wav",this.mEngine,this);
          backgroundMusic = AudioFactory.getMusic("back.wav",this.mEngine,this);
       
-         bulletsPool=new SpritePool(mVehiclesTextureRegion, this.getVertexBufferObjectManager(),10,10);
+         bulletsPool=new SpritePool(mVehiclesTextureRegion, this.getVertexBufferObjectManager(),15,15);
          targetsPool=new SpritePool(mBoxTextureRegion, this.getVertexBufferObjectManager(),30,52);
 	}
     private void initializeLists()
