@@ -6,7 +6,6 @@ import java.util.LinkedList;
 
 import org.andengine.audio.sound.Sound;
 import org.andengine.entity.modifier.MoveModifier;
-import org.andengine.entity.modifier.RotationModifier;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.entity.sprite.Sprite;
@@ -15,19 +14,16 @@ import org.andengine.extension.physics.box2d.PhysicsWorld;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
-import org.andengine.util.math.MathUtils;
-import org.projii.commons.utils.Size;
-import org.projii.interfaces.IVisualizeShip;
 import org.projii.commons.shipLogic.moveLogic;
 import org.projii.commons.shipLogic.moveLogic.MovingType;
 import org.projii.commons.shipLogic.shootLogic;
-import  org.projii.commons.utils.RotationAngles;
-import android.util.FloatMath;
-import android.util.Log;
+import org.projii.commons.utils.RotationAngles;
+import org.projii.commons.utils.Size;
 import org.projii.commons.utils.Vector2;
+import org.projii.interfaces.IVisualizeShip;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
  public class ShipModel {
 	
 	private static final float SPEED_BULLET = 1700;
@@ -41,7 +37,6 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 	private float timeCounter = 0, timeRate= 0.25f,betweenRotationsTimeCounter;
 	private float delta, prevTime = 0;
 	private float UPDATE_TIME=0.075f;
-	private float newDeltaAngle;
     private float prevAngle=0;
 	private boolean isBraking;
     private	IVisualizeShip visualizator;
@@ -72,6 +67,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 		final FixtureDef shipFixtureDef = PhysicsFactory.createFixtureDef(1, 0.1f, 0.5f);
 		this.shipBody = PhysicsFactory.createBoxBody(physicsWorld, this.ship, BodyType.DynamicBody, shipFixtureDef);
         ship.animate(100);
+       
 	
 	}
     //moving//
@@ -117,7 +113,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 	/*Realzation*/
 	
 	private void setSpeed(Vector2 speedLimit,Vector2 incrementSpeed,Body body){
-		visualizator.defineSpeed(speedLimit, incrementSpeed, body);
+		visualizator.setSpeed(speedLimit, incrementSpeed, body);
 		
 	}
 	private void updateRotateValues(float nextAngle,float newDeltaAngle)
@@ -129,7 +125,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 	
 	private void makeRotation(float timeForRotation,RotationAngles rotationAngles,AnimatedSprite sprite,float newDeltaAngle)
 	{
-		 visualizator.rotateShip(timeForRotation, rotationAngles, sprite, newDeltaAngle);
+		 visualizator.rotate(timeForRotation, rotationAngles, sprite);
 		 updateRotateValues(rotationAngles.nextAngle,newDeltaAngle);
 		
 	}
@@ -173,7 +169,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
     /*end-time functions*/
 	/*shooting*/
    
-    private void shootLinearBullet(Vector2 bulletStartPosition, Vector2 aim,Scene scene,SpritePool bulletPool,LinkedList bulletsToBeAdded) 
+    private void shootLinearBullet(Vector2 bulletStartPosition, Vector2 aim,Scene scene,SpritePool bulletPool,LinkedList<Sprite> bulletsToBeAdded) 
 	{ 
 		Sprite bullet;
 		bullet = bulletPool.obtainPoolItem();
@@ -185,7 +181,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 	    
 	    
 	}
-	public void shooting(Scene scene,SpritePool bulletPool,LinkedList bulletsToBeAdded,Sound shootingSound) 
+	public void shooting(Scene scene,SpritePool bulletPool,LinkedList<Sprite> bulletsToBeAdded,Sound shootingSound) 
 	{ 
 		if (timeCounter >= timeRate)
 		{

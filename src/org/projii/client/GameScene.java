@@ -41,7 +41,7 @@ public class GameScene extends Scene {
 	{
 		worldSize= new Size(width,height);
 	}
-	public void removeSprite(final Sprite _sprite,SimpleBaseGameActivity game, Iterator it) {
+	public void removeSprite(final Sprite _sprite,SimpleBaseGameActivity game, Iterator<?> it) {
 	    game.runOnUpdateThread(new Runnable() {
 	        @Override
 	        public void run() {

@@ -22,7 +22,6 @@ public class LoginActivity extends Activity implements OnClickListener{
     boolean isGroupExists = true; 
 	
 	Button btnLogin;
-	Button btnExit;
 	EditText edtLogin;
 	EditText edtPass;
 	
@@ -33,11 +32,9 @@ public class LoginActivity extends Activity implements OnClickListener{
         
         btnLogin = (Button) findViewById(R.id.btnLogin);
         btnLogin.setOnClickListener(this);
-        btnExit = (Button) findViewById(R.id.btnExit);
-        btnExit.setOnClickListener(this);
-        edtLogin = (EditText) findViewById(R.id.edtLogin);
+        edtLogin = (EditText) findViewById(R.id.edtUsernameOrEmail);
         edtLogin.setOnClickListener(this);
-        edtPass = (EditText) findViewById(R.id.edtPass);
+        edtPass = (EditText) findViewById(R.id.edtPassword);
         edtPass.setOnClickListener(this);
     }
     
@@ -47,19 +44,16 @@ public class LoginActivity extends Activity implements OnClickListener{
         switch (v.getId()) {
         case R.id.btnLogin:
         	if (edtLogin.getText().toString().equals("")){
-        		Toast.makeText(getApplicationContext(), "Введите имя", Toast.LENGTH_SHORT).show();       	
-        //} else if (edtPass.getText().toString().equals("")){
-        //    	 Toast.makeText(getApplicationContext(), "Введите пароль", Toast.LENGTH_SHORT).show();
+        		Toast.makeText(getApplicationContext(), "field is empty", Toast.LENGTH_SHORT).show();       	
+      
         	} else {
-        		// идет запрос, Есливсе совпадает тогда логинимся 
+
         		Intent intent = new Intent(this, ShipActivity.class);
         		finish();
       	    	startActivity(intent);
         	}
       	    break;
-        case R.id.btnExit:
-        	finish();
-        	break;
+        
         }
       }
     

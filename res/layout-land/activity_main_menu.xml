@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/fonn"
+    android:gravity="center"
+    android:orientation="horizontal" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible" >
+
+        <Button
+            android:id="@+id/btnMainMenuExit"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/button_cancel_selector" />
+
+        <Button
+            android:id="@+id/btnMainMenuPlay"
+            android:layout_width="150dp"
+            android:layout_height="70dp"
+            android:layout_alignRight="@+id/btnMainMenuExit"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="25dp"
+            android:background="@drawable/button_play_selector"
+            android:ellipsize="none"
+            android:text="@string/play"
+            android:textColor="@android:color/white"
+            android:textSize="40sp"
+            android:textStyle="bold"
+            android:typeface="serif" />
+
+        <Button
+            android:id="@+id/btnSettings"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignLeft="@+id/btnMainMenuExit"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+             android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/button_settings_selector" 
+           />
+
+    </RelativeLayout>
+
+</LinearLayout>

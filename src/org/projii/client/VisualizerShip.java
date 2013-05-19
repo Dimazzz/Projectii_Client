@@ -10,17 +10,14 @@ import org.projii.commons.shipLogic.moveLogic;;
 public class VisualizerShip implements IVisualizeShip {
 
 	@Override
-	public void rotateShip(float timeForRotation,
-			RotationAngles rotationAngles, AnimatedSprite sprite,
-			float newDeltaAngle) {
+	public void rotate(float timeForRotation,RotationAngles rotationAngles, AnimatedSprite sprite) {
 		 sprite.clearEntityModifiers();
 		 RotationModifier entityModifier=new RotationModifier(timeForRotation,rotationAngles.prevAngle,rotationAngles.nextAngle);
 		 sprite.registerEntityModifier(entityModifier);
-		
 	}
 
 	@Override
-	public void defineSpeed(Vector2 speedLimit, Vector2 incrementSpeed,
+	public void setSpeed(Vector2 speedLimit, Vector2 incrementSpeed,
 			Body body) {
 		Vector2 bodyVelocity=new Vector2(body.getLinearVelocity().x,body.getLinearVelocity().y);
 		Vector2 limitedSpeed=moveLogic.getLimitedSpeed(bodyVelocity, speedLimit, incrementSpeed);

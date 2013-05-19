@@ -17,7 +17,7 @@ public class TimeLogger {
     }
 
     public static void setStatus(boolean active) {
-        active = active;
+        TimeLogger.active = active;
     }
 
     public static boolean isActive() {

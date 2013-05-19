@@ -1,23 +1,10 @@
 package org.projii.client;
 
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Random;
-
-import android.content.Context;
-import android.content.res.Resources;
-import android.opengl.GLES20;
-import android.widget.Toast;
-import org.projii.commons.utils.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-
 import org.andengine.audio.music.Music;
-import org.andengine.audio.music.MusicFactory;
 import org.andengine.audio.sound.Sound;
-import org.andengine.audio.sound.SoundFactory;
 import org.andengine.engine.camera.BoundCamera;
 import org.andengine.engine.camera.hud.HUD;
 import org.andengine.engine.camera.hud.controls.AnalogOnScreenControl;
@@ -32,7 +19,6 @@ import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.sprite.TiledSprite;
 import org.andengine.entity.util.FPSLogger;
-
 import org.andengine.extension.physics.box2d.FixedStepPhysicsWorld;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
@@ -46,9 +32,16 @@ import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.texture.region.TextureRegion;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
-import org.andengine.ui.activity.BaseGameActivity;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
-import org.projii.commons.utils.Size;;
+import org.projii.commons.utils.Size;
+import org.projii.commons.utils.Vector2;
+
+import android.content.res.Resources;
+import android.opengl.GLES20;
+
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 
 
 public class GameActivity extends SimpleBaseGameActivity {
@@ -66,10 +59,10 @@ public class GameActivity extends SimpleBaseGameActivity {
 	private static  int CAMERA_WIDTH;
 	private static  int CAMERA_HEIGHT;
 	private boolean mPlaceOnScreenControlsAtDifferentVerticalLocations = false;
-	private LinkedList targetList;
-	private LinkedList TargetsToBeAdded;
-	private LinkedList projectileLL;
-	private LinkedList projectilesToBeAdded;
+	private LinkedList<Sprite> targetList;
+	private LinkedList<Sprite> TargetsToBeAdded;
+	private LinkedList<Sprite> projectileLL;
+	private LinkedList<Sprite> projectilesToBeAdded;
 	private Sound shootingSound;
 	private Music backgroundMusic;
 	private BoundCamera mBoundChaseCamera;
@@ -148,10 +141,10 @@ public class GameActivity extends SimpleBaseGameActivity {
 	}
     private void initializeLists()
     {
-    	projectileLL = new LinkedList();
-		projectilesToBeAdded = new LinkedList();
-		targetList = new LinkedList();
-		TargetsToBeAdded = new LinkedList();
+    	projectileLL = new LinkedList<Sprite>();
+		projectilesToBeAdded = new LinkedList<Sprite>();
+		targetList = new LinkedList<Sprite>();
+		TargetsToBeAdded = new LinkedList<Sprite>();
     }
 	@Override
 	public Scene onCreateScene() {
@@ -266,11 +259,11 @@ public class GameActivity extends SimpleBaseGameActivity {
 					_projectile = bullets.next();
 
 					// in case the projectile left the screen
-					if (_projectile.getX() >= (mBoundChaseCamera.getCenterX()+mBoundChaseCamera.getWidth()/2)
-					|| _projectile.getX() <= (mBoundChaseCamera.getCenterX()- mBoundChaseCamera.getWidth()/2)
-                    || _projectile.getY() >=(mBoundChaseCamera.getCenterY() +mBoundChaseCamera.getHeight()/2)
-				    || _projectile.getY() <=(mBoundChaseCamera.getCenterY() - mBoundChaseCamera.getHeight()/2)
-							) 
+					boolean isBulletLeftScreen=(_projectile.getX() >= (mBoundChaseCamera.getCenterX()+mBoundChaseCamera.getWidth()/2)
+							|| _projectile.getX() <= (mBoundChaseCamera.getCenterX()- mBoundChaseCamera.getWidth()/2)
+		                    || _projectile.getY() >=(mBoundChaseCamera.getCenterY() +mBoundChaseCamera.getHeight()/2)
+						    || _projectile.getY() <=(mBoundChaseCamera.getCenterY() - mBoundChaseCamera.getHeight()/2));
+					if (isBulletLeftScreen)
 					{
 						bulletsPool.recyclePoolItem(_projectile);
 						bullets.remove();

@@ -9,5 +9,8 @@
     <string name="title_activity_join_game">JoinGameActivity</string>
     <string name="title_activity_ship">ShipActivity</string>
     <string name="title_activity_ship_description">ShipDescriptionActivity</string>
+    <string name="play">Play</string>
+    <string name="login">Log in</string>
+    <string name="register">register</string>
 
 </resources>

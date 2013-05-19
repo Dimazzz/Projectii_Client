@@ -1,20 +1,15 @@
 package org.projii.client.menu;
 
-import com.example.movingsamples.R;
-import com.example.movingsamples.R.drawable;
-import com.example.movingsamples.R.id;
-import com.example.movingsamples.R.layout;
-
-import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+
+import com.example.movingsamples.R;
 
 public class ShipStructureActivity extends Activity implements OnClickListener{
 
