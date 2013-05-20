@@ -85,10 +85,10 @@ public class GameActivity extends SimpleBaseGameActivity {
 
     private ShipModel shipViewer;
 	
-	private ITiledTextureRegion mBadgeTextureRegion;
+	private ITiledTextureRegion mUltraSkillOneTextureRegion,mUltraSkillTwoTextureRegion;
 	
 	private Sound explosionSound;
-	private BitmapTextureAtlas mHUDTexture;
+	private BitmapTextureAtlas mToogleButtonTexture,mUltraSkillTextureOne,mUltraSkillTextureTwo;
 	private TiledTextureRegion mToggleButtonTextureRegion;
 
 	//==========================================================
@@ -104,23 +104,31 @@ public class GameActivity extends SimpleBaseGameActivity {
 		engineOptions.getTouchOptions().setNeedsMultiTouch(true);
 		engineOptions.getAudioOptions().setNeedsMusic(true).setNeedsSound(true);
 		return engineOptions;
-		}
+	}
 	
 
 	@Override
 	public void onCreateResources() {
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 		
-		this.mBulletsTexture = new BitmapTextureAtlas(this.getTextureManager(), 184, 184, TextureOptions.BILINEAR);
+		this.mBulletsTexture = new BitmapTextureAtlas(this.getTextureManager(), 64, 32, TextureOptions.BILINEAR);
 		this.mBulletsTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBulletsTexture, this, "shots5.png", 0, 0,4,2);
 		this.mBulletsTexture.load();
 		
-		this.mHUDTexture = new BitmapTextureAtlas(this.getTextureManager(), 512, 128,TextureOptions.BILINEAR);
-		this.mToggleButtonTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mHUDTexture, this, "toggle_button.png", 0, 0, 2, 1); // 256x128
-		this.mBadgeTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mHUDTexture, this, "hud_button.png", 256, 0,2,1);
-		this.mHUDTexture.load();
+		this.mUltraSkillTextureOne = new BitmapTextureAtlas(this.getTextureManager(), 256, 128,TextureOptions.BILINEAR);
+		this.mUltraSkillOneTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mUltraSkillTextureOne, this, "hud_button.png", 0, 0,2,1);
+		this.mUltraSkillTextureOne.load();
 
-		this.shipTextureAtlas = new BitmapTextureAtlas(this.getTextureManager(), 320,80, TextureOptions.BILINEAR);
+
+		this.mUltraSkillTextureTwo = new BitmapTextureAtlas(this.getTextureManager(), 256, 128,TextureOptions.BILINEAR);
+		this.mUltraSkillTwoTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mUltraSkillTextureTwo, this, "rocket_skill.png", 0, 0,2,1);
+		this.mUltraSkillTextureTwo.load();
+		
+		this.mToogleButtonTexture = new BitmapTextureAtlas(this.getTextureManager(), 256, 128,TextureOptions.BILINEAR);
+		this.mToggleButtonTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mToogleButtonTexture, this, "toggle_button.png", 0, 0, 2, 1); // 256x128
+		this.mToogleButtonTexture.load();
+		
+		this.shipTextureAtlas = new BitmapTextureAtlas(this.getTextureManager(), 360,90, TextureOptions.BILINEAR);
         this.mshipTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.shipTextureAtlas, this, "face_box_tiled2.png", 0, 0, 4, 1);
     	this.shipTextureAtlas.load();
        
@@ -130,7 +138,7 @@ public class GameActivity extends SimpleBaseGameActivity {
 		this.mOnScreenControlKnobTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mOnScreenControlTexture, this, "onscreen_control_knob.png", 128, 0);
 		this.mOnScreenControlTexture.load();
 
-		this.mMobTexture = new BitmapTextureAtlas(this.getTextureManager(), 100, 100, TextureOptions.BILINEAR);
+		this.mMobTexture = new BitmapTextureAtlas(this.getTextureManager(), 70, 70, TextureOptions.BILINEAR);
 		this.mMobTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mMobTexture, this, "enemy.png", 0, 0);
 		this.mMobTexture.load();
 		
@@ -139,7 +147,7 @@ public class GameActivity extends SimpleBaseGameActivity {
          backgroundMusic = AudioFactory.getMusic("back.wav",this.mEngine,this);
       
          bulletsPool=new SpritePool(mBulletsTextureRegion, this.getVertexBufferObjectManager(),15,15);
-         targetsPool=new SpritePool(mMobTextureRegion, this.getVertexBufferObjectManager(),100,100);
+         targetsPool=new SpritePool(mMobTextureRegion, this.getVertexBufferObjectManager(),70,70);
 	}
     private void initializeLists()
     {
@@ -193,8 +201,8 @@ public class GameActivity extends SimpleBaseGameActivity {
 	    AnalogOnScreenControl analogOnScreenControl = new AnalogOnScreenControl(x1, y1, this.mBoundChaseCamera, this.mOnScreenControlBaseTextureRegion, this.mOnScreenControlKnobTextureRegion, UPDATE_TIME, this.getVertexBufferObjectManager(), new IAnalogOnScreenControlListener() {
 			public void onControlChange(final BaseOnScreenControl pBaseOnScreenControl, final float pValueX, final float pValueY) {
 				Vector2 joysticPosition=new Vector2(pValueX, pValueY);
-				shipViewer.movingShip(joysticPosition);//считываем текущие координаты джостика
-            }
+				shipViewer.movingShip(joysticPosition);
+				}
 
 			
 		public void onControlClick(final AnalogOnScreenControl pAnalogOnScreenControl) {
@@ -206,8 +214,8 @@ public class GameActivity extends SimpleBaseGameActivity {
 		
 		final HUD hud = new HUD();
 		final TiledSprite fireSprite=createButtonTiledSprite("fire",(int) x2-40,(int) y2-15, FIRE_BUTTON_SIZE, FIRE_BUTTON_SIZE,  this.mToggleButtonTextureRegion, this.getVertexBufferObjectManager());
-        final TiledSprite ultraSkill1Sprite=createButtonTiledSprite("ultButton1",(int) x2-110,(int) y2+40, BUTTON_SIZE, BUTTON_SIZE,  this.mBadgeTextureRegion, this.getVertexBufferObjectManager());
-        final TiledSprite ultraSkill2Sprite=createButtonTiledSprite("ultButton2",(int) x2+45,(int) y2-70, BUTTON_SIZE, BUTTON_SIZE,  this.mBadgeTextureRegion, this.getVertexBufferObjectManager());
+        final TiledSprite ultraSkill1Sprite=createButtonTiledSprite("ultButton1",(int) x2-120,(int) y2+40, BUTTON_SIZE, BUTTON_SIZE,  this.mUltraSkillOneTextureRegion, this.getVertexBufferObjectManager());
+        final TiledSprite ultraSkill2Sprite=createButtonTiledSprite("ultButton2",(int) x2+45,(int) y2-80, BUTTON_SIZE, BUTTON_SIZE,  this.mUltraSkillTwoTextureRegion, this.getVertexBufferObjectManager());
 		TiledSprite[] hudElements={fireSprite,ultraSkill1Sprite,ultraSkill2Sprite};
         for(TiledSprite hudElement:hudElements)
         {
@@ -332,12 +340,12 @@ private TiledSprite createButtonTiledSprite(final String function,int positionX,
 		public boolean onAreaTouched(final TouchEvent pAreaTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY){
     		switch(pAreaTouchEvent.getAction()){
     		case TouchEvent.ACTION_DOWN:
-    			this.setCurrentTileIndex(0);
+    			this.setCurrentTileIndex(1);
     			 executeSpriteTouchEvent(function);//shipViewer.shootBullet(mScene,bulletsPool,projectilesToBeAdded,shootingSound);
                break;
     			
 			case TouchEvent.ACTION_UP:
-				this.setCurrentTileIndex(1);
+				this.setCurrentTileIndex(0);
 				//shootingSound.setLooping(false);
 				break;
 			case TouchEvent.ACTION_MOVE:
