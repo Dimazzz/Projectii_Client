@@ -26,7 +26,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
  public class ShipModel {
 	
-	private static final float SPEED_BULLET = 1700;
+	private static final float SPEED_BULLET = 200;
 	private static final float TIME_BULLET_FLIGHT = 1.5f;
 	private final float DEFAULT_TIME_ROTATION=0.3f;
 	private final Vector2 SPEED_LIMIT=new Vector2(15, 15);
