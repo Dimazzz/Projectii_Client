@@ -129,8 +129,8 @@ public class GameActivity extends SimpleBaseGameActivity {
 		this.mOnScreenControlKnobTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mOnScreenControlTexture, this, "onscreen_control_knob.png", 128, 0);
 		this.mOnScreenControlTexture.load();
 
-		this.mBoxTexture = new BitmapTextureAtlas(this.getTextureManager(), 30, 52, TextureOptions.BILINEAR);
-		this.mBoxTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mBoxTexture, this, "box.png", 0, 0);
+		this.mBoxTexture = new BitmapTextureAtlas(this.getTextureManager(), 100, 100, TextureOptions.BILINEAR);
+		this.mBoxTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mBoxTexture, this, "enemy.png", 0, 0);
 		this.mBoxTexture.load();
 		
 		 shootingSound=AudioFactory.getSound("shot.wav",this.mEngine,this);
@@ -138,7 +138,7 @@ public class GameActivity extends SimpleBaseGameActivity {
          backgroundMusic = AudioFactory.getMusic("back.wav",this.mEngine,this);
       
          bulletsPool=new SpritePool(mVehiclesTextureRegion, this.getVertexBufferObjectManager(),15,15);
-         targetsPool=new SpritePool(mBoxTextureRegion, this.getVertexBufferObjectManager(),30,52);
+         targetsPool=new SpritePool(mBoxTextureRegion, this.getVertexBufferObjectManager(),100,100);
 	}
     private void initializeLists()
     {
