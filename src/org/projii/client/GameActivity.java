@@ -3,6 +3,7 @@ package org.projii.client;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Random;
+
 import org.andengine.audio.music.Music;
 import org.andengine.audio.sound.Sound;
 import org.andengine.engine.camera.BoundCamera;
@@ -27,10 +28,8 @@ import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
-import org.andengine.opengl.texture.atlas.bitmap.BuildableBitmapTextureAtlas;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
-import org.andengine.opengl.texture.region.TextureRegion;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
@@ -46,12 +45,14 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 
 
 public class GameActivity extends SimpleBaseGameActivity {
+	
 	// ===========================================================
 	// Constants
 	// ===========================================================
 	private final float UPDATE_TIME=0.06f;
 	private final int BUTTON_SIZE=90;
 	private final int FIRE_BUTTON_SIZE=135;
+	private static final int DEFAULT_MOB_COUNT = 10;
 
 	
 	// ===========================================================
@@ -69,10 +70,10 @@ public class GameActivity extends SimpleBaseGameActivity {
 	private BoundCamera mBoundChaseCamera;
 	private TiledTextureRegion mshipTextureRegion;
 	private BitmapTextureAtlas shipTextureAtlas;
-	private BitmapTextureAtlas mVehiclesTexture;
-	private TiledTextureRegion mVehiclesTextureRegion;
-	private BitmapTextureAtlas mBoxTexture;
-	private ITextureRegion mBoxTextureRegion;
+	private BitmapTextureAtlas mBulletsTexture;
+	private TiledTextureRegion mBulletsTextureRegion;
+	private BitmapTextureAtlas mMobTexture;
+	private ITextureRegion mMobTextureRegion;
 	private BitmapTextureAtlas mOnScreenControlTexture;
 	private ITextureRegion mOnScreenControlBaseTextureRegion;
 	private ITextureRegion mOnScreenControlKnobTextureRegion;
@@ -110,9 +111,9 @@ public class GameActivity extends SimpleBaseGameActivity {
 	public void onCreateResources() {
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 		
-		this.mVehiclesTexture = new BitmapTextureAtlas(this.getTextureManager(), 184, 184, TextureOptions.BILINEAR);
-		this.mVehiclesTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mVehiclesTexture, this, "shots5.png", 0, 0,4,2);
-		this.mVehiclesTexture.load();
+		this.mBulletsTexture = new BitmapTextureAtlas(this.getTextureManager(), 184, 184, TextureOptions.BILINEAR);
+		this.mBulletsTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mBulletsTexture, this, "shots5.png", 0, 0,4,2);
+		this.mBulletsTexture.load();
 		
 		this.mHUDTexture = new BitmapTextureAtlas(this.getTextureManager(), 512, 128,TextureOptions.BILINEAR);
 		this.mToggleButtonTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.mHUDTexture, this, "toggle_button.png", 0, 0, 2, 1); // 256x128
@@ -129,16 +130,16 @@ public class GameActivity extends SimpleBaseGameActivity {
 		this.mOnScreenControlKnobTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mOnScreenControlTexture, this, "onscreen_control_knob.png", 128, 0);
 		this.mOnScreenControlTexture.load();
 
-		this.mBoxTexture = new BitmapTextureAtlas(this.getTextureManager(), 100, 100, TextureOptions.BILINEAR);
-		this.mBoxTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mBoxTexture, this, "enemy.png", 0, 0);
-		this.mBoxTexture.load();
+		this.mMobTexture = new BitmapTextureAtlas(this.getTextureManager(), 100, 100, TextureOptions.BILINEAR);
+		this.mMobTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mMobTexture, this, "enemy.png", 0, 0);
+		this.mMobTexture.load();
 		
 		 shootingSound=AudioFactory.getSound("shot.wav",this.mEngine,this);
          explosionSound=AudioFactory.getSound("explosion.wav",this.mEngine,this);
          backgroundMusic = AudioFactory.getMusic("back.wav",this.mEngine,this);
       
-         bulletsPool=new SpritePool(mVehiclesTextureRegion, this.getVertexBufferObjectManager(),15,15);
-         targetsPool=new SpritePool(mBoxTextureRegion, this.getVertexBufferObjectManager(),100,100);
+         bulletsPool=new SpritePool(mBulletsTextureRegion, this.getVertexBufferObjectManager(),15,15);
+         targetsPool=new SpritePool(mMobTextureRegion, this.getVertexBufferObjectManager(),100,100);
 	}
     private void initializeLists()
     {
@@ -172,7 +173,7 @@ public class GameActivity extends SimpleBaseGameActivity {
 			}
 		});
 		mScene.attachChild(shipViewer.getSprite());
-		this.initializationTatgets(20);
+		this.initializationTatgets(DEFAULT_MOB_COUNT);
 		this.initOnScreenControls();
 		mScene.registerUpdateHandler(GameUpdateHandler);
 		backgroundMusic.play();
