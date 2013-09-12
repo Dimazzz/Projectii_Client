@@ -17,11 +17,7 @@ public class MoveLogic {
 	        RotationAngles  rotationAngles = MoveLogic.calculateAngles(joysticPosition,shipRotation);
 	    	float deltaDirection=Math.abs(rotationAngles.nextAngle-prevAngle);
 	        float newDeltaAngle=Math.abs(rotationAngles.nextAngle-rotationAngles.prevAngle);	
-	    	//updateRotateValues(rotationAngles.nextAngle,newDeltaAngle);
-	    	/*Log.d("Direction","DeltaofDelta->"+String.valueOf(oldDeltaAngle-newDeltaAngle));
-			  boolean deltaIsDown= oldDeltaAngle-newDeltaAngle>0;
-		      Log.d("Direction", "OneDirection->"+String.valueOf(deltaDirection)+"Dlt->"+String.valueOf(newDeltaAngle));*/
-		    boolean isInOneDirection=deltaDirection<=DELTA_DIRECTION;//in one difened direct
+	    	    boolean isInOneDirection=deltaDirection<=DELTA_DIRECTION;//in one difened direct
 		    if(wastedTime<=upDateTime)
 			{
 				if(isInOneDirection)
@@ -42,7 +38,7 @@ public class MoveLogic {
 				}
 			}
 	        return MovingType.Smooth;
-	    }
+	}
 	public static float calculateRotationTime(float newDeltaAngle,float angularSpeed)
 	{
 		float angleConst=90;float speedConst=1;
